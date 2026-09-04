@@ -27,14 +27,14 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }  ?>
                         break;
                     case 'url': 
                         if($link_url=="")
-                            $title = __('地址错误！','i_theme');
+                            $title = __('Invalid URL!','i_theme');
                         break;
                     case 'summary':
                         $title = get_post_meta($post->ID, '_sites_sescribe', true);
                         break;
                     case 'qr':
                         if($link_url=="")
-                            $title = __('地址错误！','i_theme');
+                            $title = __('Invalid URL!','i_theme');
                         else{
                             $title = "<img src='//api.qrserver.com/v1/create-qr-code/?size=150x150&margin=10&data=" . $link_url . "' width='128'>";
                             $is_html = 'data-html="true"';
@@ -59,7 +59,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }  ?>
                 }
             }
             $ico = io_theme_get_thumb();
-            //判断是不是文章 post
+            // Check whether this is a blog post
             if(get_post_type() == 'post'){
                 $title = '';
                 $url = get_permalink();

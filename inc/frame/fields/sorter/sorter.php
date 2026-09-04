@@ -32,10 +32,10 @@ class CSFramework_Option_Sorter extends CSFramework_Options {
       );
       $value          = ( ! empty( $value ) ) ? $value : $default;
       $enabled        = ( ! empty( $value['enabled'] ) ) ? array_intersect_assoc($value['enabled'],$options) : array();
-      $disabled       =  array_diff_assoc($options,$enabled);//删除已经激活的
+      $disabled       =  array_diff_assoc($options,$enabled);// Remove the ones already enabled
     }
-    $enabled_title  = ( isset( $this->field['enabled_title'] ) ) ? $this->field['enabled_title'] : esc_html__( '启用的模块', 'cs-framework' );
-    $disabled_title = ( isset( $this->field['disabled_title'] ) ) ? $this->field['disabled_title'] : esc_html__( '未启用的模块', 'cs-framework' );
+    $enabled_title  = ( isset( $this->field['enabled_title'] ) ) ? $this->field['enabled_title'] : esc_html__( 'Enabled modules', 'cs-framework' );
+    $disabled_title = ( isset( $this->field['disabled_title'] ) ) ? $this->field['disabled_title'] : esc_html__( 'Disabled modules', 'cs-framework' );
     echo '<div class="cs-modules">';
     echo '<h3>'. $enabled_title .'</h3>';
     echo '<ul class="cs-enabled">';

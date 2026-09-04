@@ -32,7 +32,7 @@ include( 'templates/header-nav.php' );
                 <div class="panel panel-default"> 
                     <?php
                     if($__visible == 2){
-                        echo '<div class="login-notice my-2">'.__('此内容需登陆后查看','i_theme').'</div>';
+                        echo '<div class="login-notice my-2">'.__('Please log in to view this content','i_theme').'</div>';
                     } else {
                         ?>
                     <div class="panel-body my-4 ">
@@ -73,15 +73,15 @@ include( 'templates/header-nav.php' );
                                         <?php
                                         $m_post_link_url = $m_link_url ?: get_permalink($post->ID);
                                         $qrurl           = "//api.qrserver.com/v1/create-qr-code/?size=150x150&margin=10&data=" . $m_post_link_url;
-                                        $qrname          = __("手机查看", "i_theme");
+                                        $qrname          = __("View on mobile", "i_theme");
                                         if (get_post_meta(get_the_ID(), '_wechat_qr', true)) {
                                             $qrurl  = get_post_meta(get_the_ID(), '_wechat_qr', true);
-                                            $qrname = __("公众号", "i_theme");
+                                            $qrname = __("WeChat", "i_theme");
                                         }
                                         ?>
                                         <div class="site-go mt-3">
                                         <?php if ($m_link_url != ""): ?>
-                                        <a style="margin-right: 10px;" href="<?php echo io_get_option('is_go') ? home_url() . '/go/?url=' . base64_encode($m_link_url) : $m_link_url ?>" title="<?php echo $sitetitle ?>" target="_blank" class="btn btn-arrow"><span><?php _e('链接直达', 'i_theme') ?><i class="fa fa-angle-right"></i></span></a>
+                                        <a style="margin-right: 10px;" href="<?php echo io_get_option('is_go') ? home_url() . '/go/?url=' . base64_encode($m_link_url) : $m_link_url ?>" title="<?php echo $sitetitle ?>" target="_blank" class="btn btn-arrow"><span><?php _e('Visit site', 'i_theme') ?><i class="fa fa-angle-right"></i></span></a>
                                         <?php endif; ?>
                                         <a href="javascript:" class="btn btn-arrow"  data-toggle="tooltip" data-placement="bottom" title="" data-html="true" data-original-title="<img src='<?php echo $qrurl ?>' width='150'>"><span><?php echo $qrname ?><i class="fa fa-qrcode"></i></span></a>
                                         </div>
@@ -110,12 +110,12 @@ include( 'templates/header-nav.php' );
                         <?php endwhile; ?>
                     </div>
                     <?php 
-                        edit_post_link(__('编辑', 'i_theme'), '<span class="edit-link">', '</span>');
+                        edit_post_link(__('Edit', 'i_theme'), '<span class="edit-link">', '</span>');
                     }
                     ?>
                 </div>
 
-                <h4 class="text-gray mt-4"><i class="icon-io-tag" style="margin-right: 27px;" id="relevant_c"></i><?php _e('相关导航','i_theme') ?></h4>
+                <h4 class="text-gray mt-4"><i class="icon-io-tag" style="margin-right: 27px;" id="relevant_c"></i><?php _e('Related sites','i_theme') ?></h4>
                 <div class="row mb-5"> 
                     <?php
                     $post_num = 6;
@@ -123,18 +123,18 @@ include( 'templates/header-nav.php' );
                     if ($i < $post_num) {
                         $custom_taxterms = wp_get_object_terms( $post->ID,'favorites', array('fields' => 'ids') );
                         $args = array(
-                        'post_type' => 'sites',// 文章类型
+                        'post_type' => 'sites',// Post type
                         'post_status' => 'publish',
-                        'posts_per_page' => 6, // 文章数量
-                        'orderby' => 'rand', // 随机排序
+                        'posts_per_page' => 6, // Number of posts
+                        'orderby' => 'rand', // Random order
                         'tax_query' => array(
                             array(
-                                'taxonomy' => 'favorites', // 分类法
+                                'taxonomy' => 'favorites', // Taxonomy
                                 'field' => 'id',
                                 'terms' => $custom_taxterms
                             )
                         ),
-                        'post__not_in' => array ($post->ID), // 排除当前文章
+                        'post__not_in' => array ($post->ID), // Exclude the current post
                         );
                         $related_items = new WP_Query( $args ); 
                         if ($related_items->have_posts()) :
@@ -148,7 +148,7 @@ include( 'templates/header-nav.php' );
                                 </div>
                             <?php endif; $i++; endwhile; endif; wp_reset_postdata();
                     }
-                    if ($i == 0) echo '<div class="col-lg-12"><div class="nothing">'.__('没有相关内容!','i_theme').'</div></div>';
+                    if ($i == 0) echo '<div class="col-lg-12"><div class="nothing">'.__('No related content!','i_theme').'</div></div>';
                     ?>
                 </div> 
 

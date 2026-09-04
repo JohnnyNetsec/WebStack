@@ -122,19 +122,19 @@ abstract class CSFramework_Options extends CSFramework_Abstract {
       $value = $this->element_value();
 
       $out .= "<pre>";
-      $out .= "<strong>". esc_html__( '配置', 'cs-framework' ) .":</strong>";
+      $out .= "<strong>". esc_html__( 'Configuration', 'cs-framework' ) .":</strong>";
       $out .= "\n";
       ob_start();
       var_export( $this->field );
       $out .= htmlspecialchars( ob_get_clean() );
       $out .= "\n\n";
-      $out .= "<strong>". esc_html__( '使用', 'cs-framework' ) .":</strong>";
+      $out .= "<strong>". esc_html__( 'Usage', 'cs-framework' ) .":</strong>";
       $out .= "\n";
       $out .= ( isset( $this->field['id'] ) ) ? "cs_get_option( '". $this->field['id'] ."' );" : '';
 
       if( ! empty( $value ) ) {
         $out .= "\n\n";
-        $out .= "<strong>". esc_html__( '值', 'cs-framework' ) .":</strong>";
+        $out .= "<strong>". esc_html__( 'Value', 'cs-framework' ) .":</strong>";
         $out .= "\n";
         ob_start();
         var_export( $value );
@@ -148,7 +148,7 @@ abstract class CSFramework_Options extends CSFramework_Abstract {
     if( ( isset( $this->field['debug_light'] ) && $this->field['debug_light'] === true ) || ( defined( 'CS_OPTIONS_DEBUG_LIGHT' ) && CS_OPTIONS_DEBUG_LIGHT ) ) {
 
       $out .= "<pre>";
-      $out .= "<strong>". esc_html__( '使用', 'cs-framework' ) .":</strong>";
+      $out .= "<strong>". esc_html__( 'Usage', 'cs-framework' ) .":</strong>";
       $out .= "\n";
       $out .= ( isset( $this->field['id'] ) ) ? "cs_get_option( '". $this->field['id'] ."' );" : '';
       $out .= "\n";
@@ -224,7 +224,7 @@ abstract class CSFramework_Options extends CSFramework_Abstract {
 
       $out .= '<input type="hidden" name="'. $this->element_name( '[multilang]', true ) .'" value="true" />';
       $out .= '</fieldset>';
-      $out .= '<p class="cs-text-desc">'. sprintf( esc_html__( '您正在编辑的语言: ( %s )', 'cs-framework' ), '<strong>'. $this->multilang['current'] .'</strong>' ) .'</p>';
+      $out .= '<p class="cs-text-desc">'. sprintf( esc_html__( 'You are editing the language: ( %s )', 'cs-framework' ), '<strong>'. $this->multilang['current'] .'</strong>' ) .'</p>';
 
     }
 

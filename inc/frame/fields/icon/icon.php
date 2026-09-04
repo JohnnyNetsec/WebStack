@@ -22,8 +22,8 @@ class CSFramework_Option_icon extends CSFramework_Options {
 
     echo '<div class="cs-icon-select">';
     echo '<span class="cs-icon-preview'. $hidden .'"><i class="'. $value .'"></i></span>';
-    echo '<a href="#" class="button button-primary cs-icon-add">'. esc_html__( '添加Icon', 'cs-framework' ) .'</a>';
-    echo '<a href="#" class="button cs-warning-primary cs-icon-remove'. $hidden .'">'. esc_html__( '移除Icon', 'cs-framework' ) .'</a>';
+    echo '<a href="#" class="button button-primary cs-icon-add">'. esc_html__( 'Add Icon', 'cs-framework' ) .'</a>';
+    echo '<a href="#" class="button cs-warning-primary cs-icon-remove'. $hidden .'">'. esc_html__( 'Remove Icon', 'cs-framework' ) .'</a>';
     echo '<input type="text" name="'. $this->element_name() .'" value="'. $value .'"'. $this->element_class( 'cs-icon-value' ) . $this->element_attributes() .' />';
     echo '</div>';
 

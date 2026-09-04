@@ -1,15 +1,13 @@
 /*	
 Theme Name:WebStack
-Theme URI:https://www.iotheme.cn
-Description:wordpress 导航主题！官方网站：<a href="https://www.iotheme.cn">一为主题</a>，</br><a href="https://www.iotheme.cn/store/onenav.html">升级到最新的OneNav导航主题</a>，体验更多功能 
+Theme URI:https://github.com/51sec/WebStack
+Description:A WordPress navigation and bookmark directory theme.
 Version:1.2025
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 5.6
-Author:iowen, LoveDoLove
-Author URI: https://www.iowen.cn/
-License URI: https://www.iotheme.cn/disclaimer
+License: MIT
+License URI: https://opensource.org/licenses/MIT
 Text Domain: i_theme
-Domain Path: /languages
-Tags: 导航, 菜单, 响应式, 兼容性
+Tags: navigation, menu, responsive, bookmarks
 */

@@ -14,7 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) { die; } // Cannot access pages directly.
 
 $options[] = array(
     'id' => 'sites_meta',
-    'title' => '网址链接属性',
+    'title' => 'Site link settings',
     'post_type' => 'sites',
     'data_type' => 'unserialize',
     'context' => 'normal',
@@ -26,47 +26,47 @@ $options[] = array(
                 array(
                     'id' => '_visible',
                     'type' => 'radio',
-                    'title' => '可查看用户',
+                    'title' => 'Who can view',
                     'class'   => 'horizontal',
                     'options' => array(
-                        '1' => '仅管理员可见',
-                        '2' => '登陆可见',
-                        '0' => '所有人',
+                        '1' => 'Administrators only',
+                        '2' => 'Logged-in users',
+                        '0' => 'Everyone',
                     ),
                     'default' => '0',
                 ),
                 array(
                     "id" => "_sites_link",
                     "type"=>"text",
-                    "title" => "输入网址链接，",
-                    'after' =>'需包含 http(s)://<br><span style="font-weight: normal;color: crimson;margin-top: 10px;display: block;">注意：“网址”和“公众号二维码”两者可同时填写，但是至少填一项。</span>',
+                    "title" => "Website URL",
+                    'after' =>'Must include http(s)://<br><span style="font-weight: normal;color: crimson;margin-top: 10px;display: block;">Note: you may fill in both the website URL and the WeChat QR code, but at least one of them is required.</span>',
                 ),
             
                 array(
                     "id" => "_sites_sescribe",
                     "type"=>"text",
-                    "title" => "描叙",
+                    "title" => "Description",
                 ),
             
                 array(
                     "id" => "_sites_order",
                     "std" => "0",
-                    "title" => "网址排序数值越大越靠前",
+                    "title" => "Order (higher numbers come first)",
                     "type"=>"text"
                 ),
             
                 array(
                     "id" => "_thumbnail",
                     "type"=>"image",
-                    "title" => "添加图标地址，调用自定义图标",
-                    'add_title' => '添加图标',
+                    "title" => "Custom icon URL",
+                    'add_title' => 'Add icon',
                 ),
             
                 array(
                     "id" => "_wechat_qr",
                     "type"=>"image",
-                    "title" => "添加公众号二维码",
-                    'add_title' => '添加二维码',
+                    "title" => "WeChat QR code",
+                    'add_title' => 'Add QR code',
                 ),
             ),
         ),

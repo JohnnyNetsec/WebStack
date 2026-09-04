@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: 投稿模板
+Template Name: Submit a Site
 */
 
 get_header(); 
@@ -19,21 +19,21 @@ include( 'templates/header-nav.php' );
                             <div class="col-sm-12">
                                 <?php while( have_posts() ): the_post(); ?>
 	    			            <?php the_content();?>
-                                    <?php edit_post_link(__('编辑','i_theme'), '<span class="edit-link">', '</span>' ); ?>
+                                    <?php edit_post_link(__('Edit','i_theme'), '<span class="edit-link">', '</span>' ); ?>
 	    		                <?php endwhile; ?> 
                             </div> 
                         </div>
                     </div>
                 </div>
                 <div class="panel panel-tougao">
-                    <h1 class="h2"><?php _e('添加网站','i_theme') ?></h1>
+                    <h1 class="h2"><?php _e('Add a Website','i_theme') ?></h1>
                     <form id="tougao" class="io-tougao mb-4" method="post" action="<?php echo $_SERVER["REQUEST_URI"]?>">
                         <div style="text-align: left; padding-top: 10px;">
-                            <label for="tougao_sites_ico"><?php _e('网站图标:','i_theme') ?></label>
+                            <label for="tougao_sites_ico"><?php _e('Website icon:','i_theme') ?></label>
                             <input type="hidden" value="" id="tougao_sites_ico" name="tougao_sites_ico" />
                             <div class="upload_img">
                                 <div class="show_ico">
-                                    <img id="show_sites_ico" src="<?php echo get_theme_file_uri('/images/add.png') ?>" alt="<?php _e('网站图标','i_theme') ?>">
+                                    <img id="show_sites_ico" src="<?php echo get_theme_file_uri('/images/add.png') ?>" alt="<?php _e('Website icon','i_theme') ?>">
                                     <i id="remove_sites_ico" class="fa fa-times-circle remove" data-id="" data-type="sites_ico" style="display: none;"></i>
                                 </div> 
                                 <input type="file" id="upload_sites_ico" data-type="sites_ico" accept="image/*" onchange="uploadImg(this)" >
@@ -43,19 +43,19 @@ include( 'templates/header-nav.php' );
                             <div class="col-sm-6 mt-2"  > 
                                 <div class="input-group">
                                     <div class="input-group-addon"><i class="fa fa-sitemap fa-fw" aria-hidden="true"></i></div>
-                                <input type="text" class="form-control" value="" id="tougao_title" name="tougao_title" placeholder="<?php _e('网站名称','i_theme') ?> *" maxlength="30"/>
+                                <input type="text" class="form-control" value="" id="tougao_title" name="tougao_title" placeholder="<?php _e('Website name','i_theme') ?> *" maxlength="30"/>
                                 </div>
                             </div>
                             <div class="col-sm-6 mt-2">
                                 <div class="input-group">
                                     <div class="input-group-addon"><i class="fa fa-link fa-fw" aria-hidden="true"></i></div>
-                                <input type="text" class="form-control" value="" id="tougao_sites_link" name="tougao_sites_link" placeholder="<?php _e('网站链接','i_theme') ?>"/>
+                                <input type="text" class="form-control" value="" id="tougao_sites_link" name="tougao_sites_link" placeholder="<?php _e('Website URL','i_theme') ?>"/>
                                 </div>
                             </div>
                             <div class="col-sm-6 mt-2">
                                 <div class="input-group">
                                     <div class="input-group-addon"><i class="fa fa-braille fa-fw" aria-hidden="true"></i></div>
-                                <input type="text" class="form-control" value="" id="tougao_sites_sescribe" name="tougao_sites_sescribe"  placeholder="<?php _e('网站描叙','i_theme') ?> *" maxlength="50"/>
+                                <input type="text" class="form-control" value="" id="tougao_sites_sescribe" name="tougao_sites_sescribe"  placeholder="<?php _e('Website description','i_theme') ?> *" maxlength="50"/>
                                 </div>
                             </div>
                             <div class="col-sm-6 mt-2">
@@ -63,7 +63,7 @@ include( 'templates/header-nav.php' );
                                     <div class="input-group-addon"><i class="fa fa-star fa-fw" aria-hidden="true"></i></div>
                                     <?php
                                     $cat_args = array(
-                                        'show_option_all'     => __("选择分类","i_theme")." *",
+                                        'show_option_all'     => __("Select a category","i_theme")." *",
                                         'hide_empty'          => 0,
                                         'id'                  => 'tougaocategorg',
                                         'taxonomy'            => 'favorites',
@@ -77,18 +77,18 @@ include( 'templates/header-nav.php' );
                                 </div>
                             </div>
                             <div class="col-sm-3 col-md-2 mt-2">
-                                <label for="tougao_wechat_qr"><?php _e('公众号二维码:','i_theme') ?></label>
+                                <label for="tougao_wechat_qr"><?php _e('WeChat QR code:','i_theme') ?></label>
                                 <input type="hidden" value="" id="tougao_wechat_qr" name="tougao_wechat_qr" />
                                 <div class="upload_img wechat">
                                     <div class="show_ico">
-                                        <img id="show_wechat_qr" src="<?php echo get_theme_file_uri('/images/add.png') ?>" alt="<?php _e('公众号二维码','i_theme') ?>">
+                                        <img id="show_wechat_qr" src="<?php echo get_theme_file_uri('/images/add.png') ?>" alt="<?php _e('WeChat QR code','i_theme') ?>">
                                         <i id="remove_wechat_qr" class="fa fa-times-circle remove" data-id="" data-type="wechat_qr" style="display: none;"></i>
                                     </div> 
                                     <input type="file" id="upload_wechat_qr" data-type="wechat_qr" accept="image/*" onchange="uploadImg(this)" >
                                 </div>
                             </div>
                             <div class="col-sm-9 col-md-10 mt-2">
-                                <label style="vertical-align:top" for="tougao_content"><?php _e('网站介绍:','i_theme') ?></label>
+                                <label style="vertical-align:top" for="tougao_content"><?php _e('About the site:','i_theme') ?></label>
                                 <textarea rows="6" cols="55" id="tougao_content" name="tougao_content"></textarea>
                             </div>
                         </div>
@@ -97,11 +97,11 @@ include( 'templates/header-nav.php' );
                             <div class="form-group">
                                 <div class="input-group">
                                     <div class="input-group-addon"><i class="fa fa-key" aria-hidden="true"></i></div>
-                                    <input type="text" name="tougao_form"  class="form-control" id="inputVeri" maxlength="4" placeholder="<?php _e('输入验证码','i_theme') ?>">
+                                    <input type="text" name="tougao_form"  class="form-control" id="inputVeri" maxlength="4" placeholder="<?php _e('Enter the code','i_theme') ?>">
                                     <div id="verification-text" class="input-group-addon">0000</div>
                                 </div>
                             </div>
-                            <button id="submit" type="submit" class="btn"><?php _e('提交','i_theme') ?></button>
+                            <button id="submit" type="submit" class="btn"><?php _e('Submit','i_theme') ?></button>
                         </div>
                     </form> 
 	    	    </div>
@@ -115,7 +115,7 @@ include( 'templates/header-nav.php' );
 
     $('#tougao').submit(function() {
         if($('#inputVeri').val() != verification){
-            showAlert(JSON.parse('{"status":3,"msg":"<?php _e('验证码错误！','i_theme') ?>"}'));
+            showAlert(JSON.parse('{"status":3,"msg":"<?php _e('Incorrect verification code!','i_theme') ?>"}'));
             return false;
         }
 		$.ajax({
@@ -130,7 +130,7 @@ include( 'templates/header-nav.php' );
             }
             showAlert(result);
         }).fail(function (result) {
-            showAlert(JSON.parse('{"status":3,"msg":"<?php _e('网络连接错误！','i_theme') ?>"}'));
+            showAlert(JSON.parse('{"status":3,"msg":"<?php _e('Network connection error!','i_theme') ?>"}'));
         });
         return false;
     });
@@ -164,11 +164,11 @@ include( 'templates/header-nav.php' );
         var doc_id=file.getAttribute("data-type");
         if (file.files != null && file.files[0] != null) {
             if (!/\.(jpg|jpeg|png|JPG|PNG)$/.test(file.files[0].name)) {    
-                showAlert(JSON.parse('{"status":3,"msg":"<?php _e('图片类型只能是jpeg,jpg,png！','i_theme') ?>"}'));   
+                showAlert(JSON.parse('{"status":3,"msg":"<?php _e('Images must be jpeg, jpg or png!','i_theme') ?>"}'));   
                 return false;    
             } 
             if(file.files[0].size > (1000 * 128)){
-                showAlert(JSON.parse('{"status":3,"msg":"<?php _e('图片大小不能超过128kb','i_theme') ?>"}'));
+                showAlert(JSON.parse('{"status":3,"msg":"<?php _e('Image size must not exceed 128KB','i_theme') ?>"}'));
                 return false;
             }
             var formData = new FormData();
@@ -192,15 +192,15 @@ include( 'templates/header-nav.php' );
                     $(file).attr("disabled","disabled").parent().addClass('disabled');
                 }
             }).fail(function (result) {
-                showAlert(JSON.parse('{"status":3,"msg":"<?php _e('网络连接错误！','i_theme') ?>"}'));
+                showAlert(JSON.parse('{"status":3,"msg":"<?php _e('Network connection error!','i_theme') ?>"}'));
             });
         }else{
-            showAlert(JSON.parse('{"status":2,"msg":"<?php _e('请选择文件！','i_theme') ?>"}'));
+            showAlert(JSON.parse('{"status":2,"msg":"<?php _e('Please select a file!','i_theme') ?>"}'));
             return false;
         }
     }
     $('.fa.remove').click(function() {
-        if(!confirm('<?php _e('确定要删除图片吗?','i_theme') ?>')){
+        if(!confirm('<?php _e('Delete this image?','i_theme') ?>')){
             return false;
         }
         var doc_id = $(this).data('type');
@@ -221,7 +221,7 @@ include( 'templates/header-nav.php' );
                 $("#upload_"+doc_id).removeAttr("disabled").val("").parent().removeClass('disabled');
             }
         }).fail(function (result) {
-            showAlert(JSON.parse('{"status":3,"msg":"<?php _e('网络连接错误！','i_theme') ?>"}'));
+            showAlert(JSON.parse('{"status":3,"msg":"<?php _e('Network connection error!','i_theme') ?>"}'));
         });
     });
 </script>

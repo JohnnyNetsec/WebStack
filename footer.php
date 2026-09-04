@@ -28,12 +28,9 @@ if ($police_icp = io_get_option('police_icp')) {
                     </a>
                 </div>
                 <div class="footer-inner">
-                    <!---请保留版权说明，谢谢---->
                     <div class="footer-text">
                         Copyright © <?php echo date('Y') ?> <?php bloginfo('name'); ?> <?php echo $_icp ?>
-                        &nbsp;&nbsp;Design by <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank"><strong>Webstack</strong></a>&nbsp;&nbsp;Modify by <a href="https://github.com/owen0o0/WebStack" target="_blank"><strong>iowen</strong></a>
                     </div>
-                    <!---请保留版权说明，谢谢---->
                 </div>
             </footer>
         </div>
@@ -78,8 +75,8 @@ if ($police_icp = io_get_option('police_icp')) {
             }
         })
         $("#main-menu li ul li").click(function() {
-            $(this).siblings('li').removeClass('active'); // 删除其他兄弟元素的样式
-            $(this).addClass('active'); // 添加当前元素的样式
+            $(this).siblings('li').removeClass('active'); // Remove the active style from sibling elements
+            $(this).addClass('active'); // Add the active style to the current element
         });
         $("a.smooth").click(function(ev) {
             ev.preventDefault();
@@ -116,8 +113,8 @@ if ($police_icp = io_get_option('police_icp')) {
     </script>
 <?php endif; ?>
 <?php wp_footer(); ?>
-<!-- 自定义代码 -->
+<!-- Custom code -->
 <?php echo io_get_option('code_2_footer');?>
-<!-- end 自定义代码 -->
+<!-- end custom code -->
 </body>
 </html>

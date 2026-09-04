@@ -18,9 +18,9 @@ class CSFramework_Option_Gallery extends CSFramework_Options {
     echo $this->element_before();
 
     $value  = $this->element_value();
-    $add    = ( ! empty( $this->field['add_title'] ) ) ? $this->field['add_title'] : esc_html__( '添加画廊', 'cs-framework' );
-    $edit   = ( ! empty( $this->field['edit_title'] ) ) ? $this->field['edit_title'] : esc_html__( '编辑画廊', 'cs-framework' );
-    $clear  = ( ! empty( $this->field['clear_title'] ) ) ? $this->field['clear_title'] : esc_html__( '清除', 'cs-framework' );
+    $add    = ( ! empty( $this->field['add_title'] ) ) ? $this->field['add_title'] : esc_html__( 'Add gallery', 'cs-framework' );
+    $edit   = ( ! empty( $this->field['edit_title'] ) ) ? $this->field['edit_title'] : esc_html__( 'Edit gallery', 'cs-framework' );
+    $clear  = ( ! empty( $this->field['clear_title'] ) ) ? $this->field['clear_title'] : esc_html__( 'Clear', 'cs-framework' );
     $hidden = ( empty( $value ) ) ? ' hidden' : '';
 
     echo '<ul>';

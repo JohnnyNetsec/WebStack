@@ -70,13 +70,13 @@ class CSFramework_Option_typography extends CSFramework_Options {
 
       do_action( 'cs_typography_family', $family_value, $this );
 
-      echo '<optgroup label="'. esc_html__( '网络安全字体', 'cs-framework' ) .'">';
+      echo '<optgroup label="'. esc_html__( 'Web safe fonts', 'cs-framework' ) .'">';
       foreach ( $websafe_fonts as $websafe_value ) {
         echo '<option value="'. $websafe_value .'" data-variants="'. implode( '|', $default_variants ) .'" data-type="websafe"'. selected( $websafe_value, $family_value, true ) .'>'. $websafe_value .'</option>';
       }
       echo '</optgroup>';
 
-      echo '<optgroup label="'. esc_html__( '谷歌字体', 'cs-framework' ) .'">';
+      echo '<optgroup label="'. esc_html__( 'Google fonts', 'cs-framework' ) .'">';
       foreach ( $googlefonts as $google_key => $google_value ) {
         echo '<option value="'. $google_key .'" data-variants="'. implode( '|', $google_value ) .'" data-type="google"'. selected( $google_key, $family_value, true ) .'>'. $google_key .'</option>';
       }
@@ -104,7 +104,7 @@ class CSFramework_Option_typography extends CSFramework_Options {
 
     } else {
 
-      echo esc_html__( '错误！不能加载json文件', 'cs-framework' );
+      echo esc_html__( 'Error! Could not load the JSON file', 'cs-framework' );
 
     }
 

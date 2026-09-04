@@ -12,14 +12,14 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 /**
- * 注册菜单
+ * Register menus
  */
 register_nav_menus( array(
-	'nav_main' => '侧栏底部菜单',
+	'nav_main' => 'Sidebar bottom menu',
 ));
 
 
-//激活友情链接模块
+// Enable the links (blogroll) module
 add_filter( 'pre_option_link_manager_enabled', '__return_true' );
 
 require_once get_theme_file_path() .'/inc/frame/cs-framework.php';
@@ -34,18 +34,18 @@ function my_theme_setup(){
     load_theme_textdomain( 'i_theme', get_template_directory() . '/languages' );
 }
 
-// 禁用版本修订
+// Disable post revisions
 add_filter( 'wp_revisions_to_keep', 'disable_wp_revisions_to_keep', 10, 2 );
 function disable_wp_revisions_to_keep( $num, $post ) {
 	return 0;
 }
 
-// 禁用自动保存
+// Disable autosave
 add_action('admin_print_scripts', function($a){ wp_deregister_script('autosave');});
 
  
 
-// 替换用户链接
+// Replace author links
 add_filter( 'request', 'my_author' );
 function my_author( $query_vars ) {
 	if ( array_key_exists( 'author_name', $query_vars ) ) {
@@ -67,7 +67,7 @@ function my_author_link( $link, $author_id, $author_nicename ) {
 	return $link;
 }
 
-// 屏蔽用户名称类
+// Hide username-based body classes
 function remove_comment_body_author_class( $classes ) {
 	foreach( $classes as $key => $class ) {
 	if(strstr($class, "comment-author-")||strstr($class, "author-")) {
@@ -81,7 +81,7 @@ function remove_comment_body_author_class( $classes ) {
 
 
 /**
- * 禁止WordPress自动生成缩略图
+ * Stop WordPress generating extra thumbnail sizes
  */
 function ztmao_remove_image_size($sizes) {
     unset( $sizes['small'] );
@@ -93,12 +93,12 @@ add_filter('image_size_names_choose', 'ztmao_remove_image_size');
 
  
 /**
- * 禁用 auto-embeds
+ * Disable auto-embeds
  */
 remove_filter( 'the_content', array( $GLOBALS['wp_embed'], 'autoembed' ), 8 );
 
 /**
- * 禁止谷歌字体
+ * Disable Google Fonts
  */
 function remove_open_sans() {
     wp_deregister_style( 'open-sans' );
@@ -108,21 +108,21 @@ function remove_open_sans() {
 add_action( 'init', 'remove_open_sans' );
 
 /**
- * 禁止代码标点符合转义
+ * Disable punctuation escaping in code
  */
 remove_filter('the_content', 'wptexturize');
 
 /**
- * 字体增加
+ * Add editor fonts
  */
 function custum_fontfamily($initArray){  
-   $initArray['font_formats'] = "微软雅黑='微软雅黑';宋体='宋体';黑体='黑体';仿宋='仿宋';楷体='楷体';隶书='隶书';幼圆='幼圆';";  
+   $initArray['font_formats'] = "Microsoft YaHei='Microsoft YaHei';SimSun='SimSun';SimHei='SimHei';FangSong='FangSong';KaiTi='KaiTi';LiSu='LiSu';YouYuan='YouYuan';";  
    return $initArray;  
 }  
 add_filter('tiny_mce_before_init', 'custum_fontfamily');
 
 /**
- * 去掉描述P标签
+ * Strip <p> tags from descriptions
  */
 function deletehtml($description) {
     $description = trim($description);
@@ -133,7 +133,7 @@ add_filter('category_description', 'deletehtml');
 
 
 /**
- * 搜索结果排除所有页面
+ * Exclude pages from search results
  */
 function search_filter_page($query) {
     if ($query->is_search) {
@@ -144,29 +144,29 @@ function search_filter_page($query) {
 //add_filter('pre_get_posts','search_filter_page');
 
 /**
- * 去除wordpress前台顶部工具条
+ * Remove the admin bar from the front end
  */
 show_admin_bar(false);
 
 /**
- * 移除顶部多余信息
+ * Remove unnecessary head output
  */
 if( io_get_option('ioc_wp_head') ) :
-    //remove_action( 'wp_head', 'wp_enqueue_scripts', 1 ); //Javascript的调用
-    remove_action( 'wp_head', 'feed_links', 2 ); //移除feed
-    remove_action( 'wp_head', 'feed_links_extra', 3 ); //移除feed
-    remove_action( 'wp_head', 'rsd_link' ); //移除离线编辑器开放接口
-    remove_action( 'wp_head', 'wlwmanifest_link' );  //移除离线编辑器开放接口
-    remove_action( 'wp_head', 'index_rel_link' );//去除本页唯一链接信息
-    remove_action('wp_head', 'parent_post_rel_link', 10, 0 );//清除前后文信息
-    remove_action('wp_head', 'start_post_rel_link', 10, 0 );//清除前后文信息
+    //remove_action( 'wp_head', 'wp_enqueue_scripts', 1 ); // Javascript output
+    remove_action( 'wp_head', 'feed_links', 2 ); // Remove feeds
+    remove_action( 'wp_head', 'feed_links_extra', 3 ); // Remove feeds
+    remove_action( 'wp_head', 'rsd_link' ); // Remove offline editor endpoints
+    remove_action( 'wp_head', 'wlwmanifest_link' );  // Remove offline editor endpoints
+    remove_action( 'wp_head', 'index_rel_link' );// Remove the shortlink for this page
+    remove_action('wp_head', 'parent_post_rel_link', 10, 0 );// Remove adjacent post links
+    remove_action('wp_head', 'start_post_rel_link', 10, 0 );// Remove adjacent post links
     remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0 );
     remove_action( 'wp_head', 'locale_stylesheet' );
     remove_action('publish_future_post','check_and_publish_future_post',10, 1 );
     remove_action( 'wp_head', 'noindex', 1 );
-    //remove_action( 'wp_head', 'wp_print_styles', 8 );//载入css
+    //remove_action( 'wp_head', 'wp_print_styles', 8 );// Load CSS
     //remove_action( 'wp_head', 'wp_print_head_scripts', 9 );
-    remove_action( 'wp_head', 'wp_generator' ); //移除WordPress版本
+    remove_action( 'wp_head', 'wp_generator' ); // Remove the WordPress version
     remove_action( 'wp_head', 'rel_canonical' );
     //remove_action( 'wp_footer', 'wp_print_footer_scripts' );
     remove_action( 'wp_head', 'wp_shortlink_wp_head', 10, 0 );
@@ -176,24 +176,24 @@ if( io_get_option('ioc_wp_head') ) :
     //global $wp_widget_factory;
     //remove_action('wp_head', array($wp_widget_factory->widgets['WP_Widget_Recent_Comments'] ,'recent_comments_style'));
     //}
-    //禁止加载WP自带的jquery.js
-    //if ( !is_admin() ) { // 后台不禁止
+    // Prevent loading the jquery.js bundled with WordPress
+    //if ( !is_admin() ) { // Not disabled in the admin
     //function my_init_method() {
-    //wp_deregister_script( 'jquery' ); // 取消原有的 jquery 定义
+    //wp_deregister_script( 'jquery' ); // Deregister the original jquery handle
     //}
     //add_action('init', 'my_init_method'); 
     //}
     //wp_deregister_script( 'l10n' );
 endif;
 
-//隐藏帮助选项卡
+// Hide the help tab
 add_action('in_admin_header', function(){
         global $current_screen;
         $current_screen->remove_help_tabs();
 });
 add_filter('admin_footer_text', 'left_admin_footer_text');
 function left_admin_footer_text($text) {
-    $text = '<span id="footer-thankyou">感谢您使用 <a href="https://www.iotheme.cn/" target="_blank">一为的 WordPress 主题</a></span>';
+    $text = '<span id="footer-thankyou"></span>';
     return $text;
 }
 
@@ -211,7 +211,7 @@ add_action('admin_head', 'io_head_favicon');
 
 
 /**
- * 去除后台标题中的“—— WordPress”
+ * Remove the trailing WordPress name from admin page titles
  */
 add_filter('admin_title', 'wpdx_custom_admin_title', 10, 2);
 function wpdx_custom_admin_title($admin_title, $title){
@@ -219,7 +219,7 @@ function wpdx_custom_admin_title($admin_title, $title){
 }
 
 /**
- * 禁用REST API、移除wp-json链接
+ * Disable the REST API and remove the wp-json link
  */
 if( io_get_option('ioc_api') ) :
     add_filter('rest_enabled', '_return_false');
@@ -229,7 +229,7 @@ if( io_get_option('ioc_api') ) :
 endif;
 
 /**
- * 禁用 emoji's
+ * Disable emojis
  */
 function disable_emojis() {
     remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
@@ -244,7 +244,7 @@ function disable_emojis() {
  add_action( 'init', 'disable_emojis' );
 
 /**
- * 用于删除tinymce插件的emoji
+ * Remove the emoji TinyMCE plugin
  */
  function disable_emojis_tinymce( $plugins ) {
     if ( is_array( $plugins ) ) {
@@ -255,7 +255,7 @@ function disable_emojis() {
  }
 
  /**
-  * 禁止头部加载s.w.org
+  * Stop loading s.w.org in the head
   */
 function remove_dns_prefetch( $hints, $relation_type ) {
     if ( 'dns-prefetch' === $relation_type ) {
@@ -266,7 +266,7 @@ function remove_dns_prefetch( $hints, $relation_type ) {
 add_filter( 'wp_resource_hints', 'remove_dns_prefetch', 10, 2 );
 
 /**
- * WordPress 关闭 XML-RPC 的 pingback 端口
+ * Close the XML-RPC pingback endpoint
  */
 if( io_get_option('ioc_pingback') ) :
     add_filter( 'xmlrpc_methods', 'remove_xmlrpc_pingback_ping' );
@@ -277,7 +277,7 @@ if( io_get_option('ioc_pingback') ) :
 endif;
 
 /**
- * 文章自动nofollow
+ * Automatically add nofollow to post links
  */
 add_filter( 'the_content', 'ioc_seo_wl');
 function ioc_seo_wl( $content ) {
@@ -316,11 +316,11 @@ function ioc_seo_wl( $content ) {
 }
 
 /**
- * 禁止FEED
+ * Disable feeds
  */
 if( io_get_option('ioc_feed') ) :
     function digwp_disable_feed() {
-        wp_die('<h1>' . sprintf(__('Feed已经关闭, 请访问网站%s首页%s！', 'i_theme'), '<a href="' . get_bloginfo('url') . '">', '</a>') . '</h1>');
+        wp_die('<h1>' . sprintf(__('Feeds are disabled. Please visit the %shomepage%s!', 'i_theme'), '<a href="' . get_bloginfo('url') . '">', '</a>') . '</h1>');
     }
     add_action('do_feed', 'digwp_disable_feed', 1);
     add_action('do_feed_rdf', 'digwp_disable_feed', 1);
@@ -330,7 +330,7 @@ if( io_get_option('ioc_feed') ) :
 endif;
   
 /**
- * 禁用：wp-embed.min.js
+ * Disable wp-embed.min.js
  */
 function disable_embeds_init() {  
     /* @var WP $wp */  
@@ -356,13 +356,13 @@ function disable_embeds_init() {
 add_action( 'init', 'disable_embeds_init', 9999 );  
 
 /** 
- * 删除'wpembed'TinyMCE插件
+ * Remove the 'wpembed' TinyMCE plugin
  */  
 function disable_embeds_tiny_mce_plugin( $plugins ) {  
     return array_diff( $plugins, array( 'wpembed' ) );  
 }  
 /** 
- * 删除与嵌入相关的所有重写规则。 
+ * Remove all embed related rewrite rules. 
  */  
 function disable_embeds_rewrites( $rules ) {  
     foreach ( $rules as $rule => $rewrite ) {  
@@ -373,7 +373,7 @@ function disable_embeds_rewrites( $rules ) {
     return $rules;  
 }  
 /** 
- * 移除插件激活时的嵌入重写规则。
+ * Remove embed rewrite rules on plugin activation.
  */  
 function disable_embeds_remove_rewrite_rules() {  
     add_filter( 'rewrite_rules_array', 'disable_embeds_rewrites' );  
@@ -381,7 +381,7 @@ function disable_embeds_remove_rewrite_rules() {
 }  
 register_activation_hook( __FILE__, 'disable_embeds_remove_rewrite_rules' );  
 /** 
- * 在插件停用时刷新重写规则。
+ * Flush rewrite rules on plugin deactivation.
  */  
 function disable_embeds_flush_rewrite_rules() {  
     remove_filter( 'rewrite_rules_array', 'disable_embeds_rewrites' );  
@@ -390,7 +390,7 @@ function disable_embeds_flush_rewrite_rules() {
 register_deactivation_hook( __FILE__, 'disable_embeds_flush_rewrite_rules' );  
 
 /**
- * 定制CSS
+ * Custom CSS
  */
 add_action('wp_head','modify_css');
 function modify_css(){
@@ -424,40 +424,40 @@ function block_theme_editor_access() {
     }
 } 
 add_action('generate_rewrite_rules', 'io_rewrite_rules' );   
-/**********重写规则************/  
+/********** Rewrite rules ************/  
 function io_rewrite_rules( $wp_rewrite ){   
     $new_rules = array(    
         'go/?$'          => 'index.php?custom_page=go',
-    ); //添加翻译规则   
+    ); // Add the rewrite rule   
     $wp_rewrite->rules = $new_rules + $wp_rewrite->rules;   
-    //php数组相加   
+    // Merge PHP arrays   
 }  
-/*******添加query_var变量***************/  
+/******* Add query_var variables ***************/  
 add_action('query_vars', 'io_add_query_vars');   
 function io_add_query_vars($public_query_vars){     
-    $public_query_vars[] = 'custom_page'; //往数组中添加添加custom_page   
+    $public_query_vars[] = 'custom_page'; // Add custom_page to the array   
        
     return $public_query_vars;     
 }  
-//模板载入规则   
+// Template loading rules   
 add_action("template_redirect", 'io_template_redirect');   
 function io_template_redirect(){   
     global $wp;   
     global $wp_query, $wp_rewrite;   
     
-    //查询custom_page变量   
+    // Read the custom_page variable   
     if( !isset($wp_query->query_vars['custom_page']) )   
         return;  
     $reditect_page =  $wp_query->query_vars['custom_page'];   
-    //如果custom_page等于go，则载入go.php页面   
-    //注意 my-account/被翻译成index.php?custom_page=hello_page了。    
+    // If custom_page is go, load go.php   
+    // Note: my-account/ is rewritten to index.php?custom_page=hello_page.    
     if($reditect_page=='go'){
         include(TEMPLATEPATH.'/go.php');   
         die(); 
     }
 }
 /**
- * 激活主题更新重写规则
+ * Flush rewrite rules when the theme is activated
  */
 add_action( 'load-themes.php', 'io_flush_rewrite_rules' );   
 function io_flush_rewrite_rules() {   
@@ -467,7 +467,7 @@ function io_flush_rewrite_rules() {
 }  
 
 
-// 自定义图标
+// Custom icons
 class iconfont {
 	function __construct(){
 		add_filter( 'nav_menu_css_class', array( $this, 'nav_menu_css_class' ) );
@@ -620,11 +620,11 @@ function format_url($url){
     }
 }
 
-# 搜索只查询文章和网址。
+# Search only posts and sites.
 # --------------------------------------------------------------------
 add_filter('pre_get_posts','searchfilter');
 function searchfilter($query) {
-    //限定对搜索查询和非后台查询设置
+    // Only for front-end search queries
     if ($query->is_search && !is_admin() ) {
         $query->set('post_type',array('sites','post'));
     }
@@ -632,7 +632,7 @@ function searchfilter($query) {
 }
 
 /**
- * 修改搜索查询的sql代码，将postmeta表左链接进去。
+ * Modify the search SQL to LEFT JOIN the postmeta table.
  */
 add_filter('posts_join', 'cf_search_join' );
 function cf_search_join( $join ) {
@@ -646,7 +646,7 @@ function cf_search_join( $join ) {
 }
 
 /**
- * 在wordpress查询代码中加入自定义字段值的查询。
+ * Include custom field values in the search query.
  */
 add_filter('posts_where', 'cf_search_where');
 function cf_search_where( $where ) {
@@ -661,7 +661,7 @@ function cf_search_where( $where ) {
 }
 
 /**
- * 去重
+ * Remove duplicates
  */
 add_filter ('posts_distinct', 'cf_search_distinct');
 function cf_search_distinct($where) {
@@ -679,8 +679,8 @@ if(io_get_option('ioc_login_language',false)){
 }
 
 /**
- * 美化Wordpress登录页 By 一为
- * 原文地址：https://www.iowen.cn/chundaimameihuawordpressmorendengluye/
+ * Styled WordPress login page. By iowen
+ * Source: https://www.iowen.cn/chundaimameihuawordpressmorendengluye/
  */
 function io_login_header(){
     echo '<div class="login-container">
@@ -699,18 +699,18 @@ function io_login_footer(){
     echo '</div><!--login-body END-->
     </div><!--login-container END-->
     <div class="footer-copyright position-absolute">
-            <span>Copyright © <a href="'. esc_url(home_url()) .'" class="text-white-50" title="'. get_bloginfo('name') .'" rel="home">'. get_bloginfo('name') .'</a>&nbsp;&nbsp;Modify by <a href="https://www.iotheme.cn" target="_blank">一为</a></span> 
+            <span>Copyright © <a href="'. esc_url(home_url()) .'" class="text-white-50" title="'. get_bloginfo('name') .'" rel="home">'. get_bloginfo('name') .'</a></span> 
     </div>';
 }
 
 /**
- * 获取当前用户的等级
+ * Get the current user level
  * @return int
  */
 function io_get_user_level() {
-    // 判断有没有登陆
+    // Check whether the user is logged in
     if (is_user_logged_in()) {
-        // 判断是不是管理员
+        // Check whether the user is an administrator
         if (current_user_can('manage_options')) {
             return 10;
         } else {
@@ -721,8 +721,8 @@ function io_get_user_level() {
     }
 }
 /**
- * 判断是否可见
- * @param $val 0所有人 2登录可见 10管理员可见
+ * Determine visibility
+ * @param $val 0 everyone, 2 logged-in users, 10 administrators
  * @return bool
  */
 function io_is_visible($val) {
@@ -747,7 +747,7 @@ function io_is_visible($val) {
 
 
 /**
- * 获取简介 
+ * Get the excerpt 
  * @param int $count
  * @param string $meta_key
  * @param string $trimmarker
@@ -770,7 +770,7 @@ function io_get_excerpt($count = 90,$meta_key = '_seo_desc', $trimmarker = '...'
     return $excerpt;
 }
 /**
- * 获取特色图地址
+ * Get the featured image URL
  */
 function io_theme_get_thumb($post = null){
 	if( $post === null ){
@@ -780,21 +780,21 @@ function io_theme_get_thumb($post = null){
     if(!empty($post_thumbnail_src)){
         return $post_thumbnail_src;
     }
-	if( has_post_thumbnail() ){    //如果有特色缩略图，则输出缩略图地址
+	if( has_post_thumbnail() ){    // If a featured image exists, return its URL
 		$thumbnail_src = wp_get_attachment_image_src(get_post_thumbnail_id($post->ID),'full');
 		$post_thumbnail_src = $thumbnail_src [0];
 	} else {
 		$post_thumbnail_src = '';
 		$strResult = io_get_post_first_img(true);
 		if(!empty($strResult[1][0])){
-			$post_thumbnail_src = $strResult[1][0];   //获取该图片 src
+			$post_thumbnail_src = $strResult[1][0];   // Get the image src
 		}
     }
     return $post_thumbnail_src;
 }
 
 /**
- * 获取/输出缩略图地址
+ * Get / output the thumbnail URL
  */
 function io_get_post_first_img($is_array = false){ 
     global $post; 
@@ -810,8 +810,8 @@ function io_get_post_first_img($is_array = false){
     }
 }
 /**
- * 美化Wordpress登录页 By 一为
- * 原文地址：https://www.iowen.cn/chundaimameihuawordpressmorendengluye/
+ * Styled WordPress login page. By iowen
+ * Source: https://www.iowen.cn/chundaimameihuawordpressmorendengluye/
  */
 function custom_login_style(){
     $login_color_l = io_get_option('login_color_l','#7d00a0');

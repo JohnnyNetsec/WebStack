@@ -13,24 +13,24 @@
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
 
-// 网址
+// Sites
 add_action( 'init', 'post_type_sites' );
 function post_type_sites() {
 	$labels = array(
-		'name'               => '网址', 'post type general name', 'your-plugin-textdomain',
-		'singular_name'      => '网址', 'post type singular name', 'your-plugin-textdomain',
-		'menu_name'          => '网址', 'admin menu', 'your-plugin-textdomain',
-		'name_admin_bar'     => '网址', 'add new on admin bar', 'your-plugin-textdomain',
-		'add_new'            => '添加网址', 'sites', 'your-plugin-textdomain',
-		'add_new_item'       => '添加新网址', 'your-plugin-textdomain',
-		'new_item'           => '新网址', 'your-plugin-textdomain',
-		'edit_item'          => '编辑网址', 'your-plugin-textdomain',
-		'view_item'          => '查看网址', 'your-plugin-textdomain',
-		'all_items'          => '所有网址', 'your-plugin-textdomain',
-		'search_items'       => '搜索网址', 'your-plugin-textdomain',
-		'parent_item_colon'  => 'Parent 网址:', 'your-plugin-textdomain',
-		'not_found'          => '你还没有发布网址。', 'your-plugin-textdomain',
-		'not_found_in_trash' => '回收站中没有网址。', 'your-plugin-textdomain'
+		'name'               => 'Sites', 'post type general name', 'your-plugin-textdomain',
+		'singular_name'      => 'Site', 'post type singular name', 'your-plugin-textdomain',
+		'menu_name'          => 'Sites', 'admin menu', 'your-plugin-textdomain',
+		'name_admin_bar'     => 'Site', 'add new on admin bar', 'your-plugin-textdomain',
+		'add_new'            => 'Add New', 'sites', 'your-plugin-textdomain',
+		'add_new_item'       => 'Add New Site', 'your-plugin-textdomain',
+		'new_item'           => 'New Site', 'your-plugin-textdomain',
+		'edit_item'          => 'Edit Site', 'your-plugin-textdomain',
+		'view_item'          => 'View Site', 'your-plugin-textdomain',
+		'all_items'          => 'All Sites', 'your-plugin-textdomain',
+		'search_items'       => 'Search Sites', 'your-plugin-textdomain',
+		'parent_item_colon'  => 'Parent Site:', 'your-plugin-textdomain',
+		'not_found'          => 'No sites found.', 'your-plugin-textdomain',
+		'not_found_in_trash' => 'No sites found in Trash.', 'your-plugin-textdomain'
 	);
 
 	$args = array(
@@ -53,21 +53,21 @@ function post_type_sites() {
 }
 
 
-// 网址分类
+// Site categories
 add_action( 'init', 'create_sites_taxonomies', 0 );
 function create_sites_taxonomies() {
 	$labels = array(
-		'name'              => '网址分类目录', 'taxonomy general name',
-		'singular_name'     => '网址分类', 'taxonomy singular name',
-		'search_items'      => '搜索网址目录',
-		'all_items'         => '所有网址目录',
-		'parent_item'       => '父级分类目录',
-		'parent_item_colon' => '父级分类目录:',
-		'edit_item'         => '编辑网址目录',
-		'update_item'       => '更新网址目录',
-		'add_new_item'      => '添加新网址目录',
+		'name'              => 'Site Categories', 'taxonomy general name',
+		'singular_name'     => 'Site Category', 'taxonomy singular name',
+		'search_items'      => 'Search Site Categories',
+		'all_items'         => 'All Site Categories',
+		'parent_item'       => 'Parent Category',
+		'parent_item_colon' => 'Parent Category:',
+		'edit_item'         => 'Edit Site Category',
+		'update_item'       => 'Update Site Category',
+		'add_new_item'      => 'Add New Site Category',
 		'new_item_name'     => 'New Genre Name',
-		'menu_name'         => '网址分类',
+		'menu_name'         => 'Site Categories',
 	);
 
 	$args = array(
@@ -83,24 +83,24 @@ function create_sites_taxonomies() {
 }
 
 
-// 公告
+// Bulletins
 add_action( 'init', 'post_type_bulletin' );
 function post_type_bulletin() {
 	$labels = array(
-		'name'               => '公告', 'post type general name', 'your-plugin-textdomain',
-		'singular_name'      => '公告', 'post type singular name', 'your-plugin-textdomain',
-		'menu_name'          => '公告', 'admin menu', 'your-plugin-textdomain',
-		'name_admin_bar'     => '公告', 'add new on admin bar', 'your-plugin-textdomain',
-		'add_new'            => '发布公告', 'bulletin', 'your-plugin-textdomain',
-		'add_new_item'       => '发布新公告', 'your-plugin-textdomain',
-		'new_item'           => '新公告', 'your-plugin-textdomain',
-		'edit_item'          => '编辑公告', 'your-plugin-textdomain',
-		'view_item'          => '查看公告', 'your-plugin-textdomain',
-		'all_items'          => '所有公告', 'your-plugin-textdomain',
-		'search_items'       => '搜索公告', 'your-plugin-textdomain',
-		'parent_item_colon'  => 'Parent 公告:', 'your-plugin-textdomain',
-		'not_found'          => '你还没有发布公告。', 'your-plugin-textdomain',
-		'not_found_in_trash' => '回收站中没有公告。', 'your-plugin-textdomain'
+		'name'               => 'Bulletins', 'post type general name', 'your-plugin-textdomain',
+		'singular_name'      => 'Bulletin', 'post type singular name', 'your-plugin-textdomain',
+		'menu_name'          => 'Bulletins', 'admin menu', 'your-plugin-textdomain',
+		'name_admin_bar'     => 'Bulletin', 'add new on admin bar', 'your-plugin-textdomain',
+		'add_new'            => 'Add New', 'bulletin', 'your-plugin-textdomain',
+		'add_new_item'       => 'Add New Bulletin', 'your-plugin-textdomain',
+		'new_item'           => 'New Bulletin', 'your-plugin-textdomain',
+		'edit_item'          => 'Edit Bulletin', 'your-plugin-textdomain',
+		'view_item'          => 'View Bulletin', 'your-plugin-textdomain',
+		'all_items'          => 'All Bulletins', 'your-plugin-textdomain',
+		'search_items'       => 'Search Bulletins', 'your-plugin-textdomain',
+		'parent_item_colon'  => 'Parent Bulletin:', 'your-plugin-textdomain',
+		'not_found'          => 'No bulletins found.', 'your-plugin-textdomain',
+		'not_found_in_trash' => 'No bulletins found in Trash.', 'your-plugin-textdomain'
 	);
 
 	$args = array(
@@ -124,7 +124,7 @@ function post_type_bulletin() {
 }
 
 /**
- * 保存排序
+ * Save ordering
  *
  * @param int $term_id
  */
@@ -142,7 +142,7 @@ function save_term_order( $term_id ) {
 
 
 /**
- * 设置 sites 这种自定义文章类型的固定链接结构为 ID.html 
+ * Set the permalink structure of the 'sites' post type to ID.html 
  * https://www.wpdaxue.com/custom-post-type-permalink-code.html
  */
 add_filter('post_type_link', 'custom_sites_link', 1, 3);
@@ -168,21 +168,21 @@ function custom_sites_rewrites_init(){
 }
 
 
-//此部分功能是生成分类下拉菜单
+// Build the category dropdown menu
 add_action('restrict_manage_posts','io_post_type_filter',10,2);
 function io_post_type_filter($post_type, $which){
-    if('sites' !== $post_type){ //这里为自定义文章类型，需修改
-      return; //检查是否是我们需要的文章类型
+    if('sites' !== $post_type){ // Custom post type, change as needed
+      return; // Check this is the post type we want
     }
-    $taxonomy_slug     = 'favorites'; //这里为自定义分类法，需修改
+    $taxonomy_slug     = 'favorites'; // Custom taxonomy, change as needed
     $taxonomy          = get_taxonomy($taxonomy_slug);
     $selected          = '';
-    $request_attr      = 'favorites'; //这里为自定义分类法，需修改
+    $request_attr      = 'favorites'; // Custom taxonomy, change as needed
     if ( isset($_REQUEST[$request_attr] ) ) {
       $selected = $_REQUEST[$request_attr];
     }
     wp_dropdown_categories(array(
-      'show_option_all' =>  __("所有{$taxonomy->label}"),
+      'show_option_all' =>  __("All {$taxonomy->label}"),
       'taxonomy'        =>  $taxonomy_slug,
       'name'            =>  $request_attr,
       'orderby'         =>  'name',
@@ -193,7 +193,7 @@ function io_post_type_filter($post_type, $which){
       'hide_empty'      =>  false, // Don't show posts w/o terms
     ));
 }
-//此部分功能是列出指定分类下的所有文章
+// List all posts in the selected category
 add_filter('parse_query','io_work_convert_restrict'); 
 function io_work_convert_restrict($query) {  
     global $pagenow;  
@@ -212,15 +212,15 @@ function io_work_convert_restrict($query) {
 } 
 
 /**
- * 文章列表添加自定义字段
+ * Add custom columns to the post list
  * https://www.iowen.cn/wordpress-quick-edit
  */
 add_filter('manage_edit-sites_columns', 'io_ordinal_manage_posts_columns');
 add_action('manage_posts_custom_column','io_ordinal_manage_posts_custom_column',10,2);
 function io_ordinal_manage_posts_columns($columns){
-    $columns['link']       = '链接';
-	$columns['ordinal']    = '排序'; 
-	$columns['visible']    = '可见性'; 
+    $columns['link']       = 'Link';
+	$columns['ordinal']    = 'Order'; 
+	$columns['visible']    = 'Visibility'; 
 	return $columns;
 }
 function io_ordinal_manage_posts_custom_column($column_name,$id){ 
@@ -236,13 +236,13 @@ function io_ordinal_manage_posts_custom_column($column_name,$id){
 		case 'visible': {
 			switch (get_post_meta($id, '_visible', true)) {
 				case '1':
-					echo "管理员";
+					echo "Administrators";
 					break;
 				case '2':
-					echo "登陆用户";
+					echo "Logged-in users";
 					break;
 				default:
-					echo "所有人";
+					echo "Everyone";
 					break;
 			}
 			break;
@@ -250,11 +250,11 @@ function io_ordinal_manage_posts_custom_column($column_name,$id){
 	endswitch;
 }
 
-//分类列表添加自定义字段
+// Add custom columns to the category list
 add_filter('manage_edit-favorites_columns', 'io_id_manage_tags_columns');
 add_action('manage_favorites_custom_column','io_id_manage_tags_custom_column',10,3);
 function io_id_manage_tags_columns($columns){
-	$columns['ca_ordinal']    = '菜单排序'; 
+	$columns['ca_ordinal']    = 'Menu order'; 
 	$columns['id']    = 'ID'; 
     return $columns;
 }
@@ -268,7 +268,7 @@ function io_id_manage_tags_custom_column($null,$column_name,$id){
 }
 
 /**
- * 文章列表添加自定义字段
+ * Add custom columns to the post list
  * 
  */
 add_action( 'admin_head', 'io_custom_css' );
@@ -280,7 +280,7 @@ function io_custom_css(){
 	</style>';
 }
 
-//文章列表添加排序规则
+// Add sorting rules to the post list
 add_filter('manage_edit-sites_sortable_columns', 'sort_sites_order_column');
 //add_filter('manage_edit-favorites_sortable_columns', 'sort_favorites_order_column');
 add_action('pre_get_posts', 'sort_sites_order');
@@ -312,18 +312,18 @@ function sort_sites_order($query) {
 add_action('quick_edit_custom_box',  'io_add_quick_edit', 10, 2);
 function io_add_quick_edit($column_name, $post_type) {
 	if ($column_name == 'ordinal') {
-		//请注意：<fieldset>类可以是：
+		// Note: the <fieldset> class can be:
 		//inline-edit-col-left，inline-edit-col-center，inline-edit-col-right
-		//所有列均为float：left，
-		//因此，如果要在左列，请使用clear：both元素
+		// all columns are float: left,
+		// so use a clear: both element if you want the left column
 		echo '
 		<fieldset class="inline-edit-col-left" style="clear: both;">
 			<div class="inline-edit-col"> 
 				<label class="alignleft">
-					<span class="title">排序</span>
+					<span class="title">Order</span>
 					<span class="input-text-wrap"><input type="number" name="ordinal" class="ptitle" value=""></span>
 				</label> 
-				<em class="alignleft inline-edit-or"> 越大越靠前</em>
+				<em class="alignleft inline-edit-or"> Higher numbers come first</em>
 			</div>
 		</fieldset>';
 	}
@@ -332,37 +332,37 @@ function io_add_quick_edit($column_name, $post_type) {
 	  	<fieldset>
 		  	<div class="inline-edit-col"> 
 			  	<label class="alignleft">
-				  	<span class="title">排序</span>
+				  	<span class="title">Order</span>
 				  	<span class="input-text-wrap"><input type="number" name="ca_ordinal" class="ptitle" value=""></span>
 			  	</label> 
-			  	<em class="alignleft inline-edit-or"> 越大越靠前</em>
+			  	<em class="alignleft inline-edit-or"> Higher numbers come first</em>
 		  	</div>
 	  	</fieldset>';
 	}
 }
 
 
-//保存和更新数据
+// Save and update data
 add_action('save_post', 'io_save_quick_edit_data');
 function io_save_quick_edit_data($post_id) {
-    //如果是自动保存日志，并非我们所提交数据，那就不处理
+    // Skip autosaves, which are not our submitted data
     if ( defined('DOING_AUTOSAVE') && DOING_AUTOSAVE )
         return $post_id;
-    // 验证权限，'sites' 为文章类型，默认为 'post' ,这里为我自定义的文章类型'sites'
+    // Check permissions; 'sites' is the post type here, the default would be 'post'
     if (isset($_POST['post_type']) && 'sites' ==  $_POST['post_type'] ) {
         if ( !current_user_can( 'edit_page', $post_id ) )
             return $post_id;
     } 
 	$post = get_post($post_id); 
-	// 'ordinal' 与前方代码对应
+	// 'ordinal' matches the code above
     if (isset($_POST['ordinal']) && ($post->post_type != 'revision')) {
         $left_menu_id = esc_attr($_POST['ordinal']);
         if ($left_menu_id)
-			update_post_meta( $post_id, '_sites_order', $left_menu_id);// ‘_sites_order’为自定义字段
+			update_post_meta( $post_id, '_sites_order', $left_menu_id);// '_sites_order' is the custom field
     } 
 }
 
-//输出js
+// Output JS
 add_action('admin_footer', 'ashuwp_quick_edit_javascript');
 function ashuwp_quick_edit_javascript() {
 	$current_screen = get_current_screen(); 
@@ -400,7 +400,7 @@ function ashuwp_quick_edit_javascript() {
 			if ( typeof( post_id ) == 'object' ) {
 				id = parseInt( this.getId( post_id ) );
 			}
-		console.log('调试区'+id);
+		console.log('debug: '+id);
 			if ( id > 0 ) {
 				var specific_post_edit_row = $( '#edit-' + id ),
 						specific_post_row = $( '#tag-' + id ),

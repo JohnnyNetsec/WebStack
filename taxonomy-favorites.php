@@ -8,7 +8,7 @@
  * @LastEditors: iowen
  * @LastEditTime: 2024-07-30 22:08:25
  * @FilePath: /WebStack/taxonomy-favorites.php
- * @Description: 网站分类页
+ * @Description: Site category page
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
@@ -33,7 +33,7 @@ include( 'templates/header-nav.php' );
     <h4 class="text-gray"><i class="icon-io-tag" style="margin-right: 27px;" id="<?php single_cat_title() ?>"></i><?php single_cat_title() ?></h4>
 	<?php
     if($__visible == 2){
-        echo '<div class="login-notice">'.__('此分类需登陆后查看','i_theme').'</div>';
+        echo '<div class="login-notice">'.__('Please log in to view this category','i_theme').'</div>';
 	} else {
 	?>
     <div class="row">  

@@ -13,6 +13,6 @@
     }
     public function output() {
        
-      echo '同group 待编写';
+      echo 'Same as group, not implemented yet';
     } 
   } 

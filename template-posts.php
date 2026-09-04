@@ -1,13 +1,13 @@
 <?php
 /*
-Template Name: 文章列表
+Template Name: Post List
 */
 
 get_header(); 
 
 include( 'templates/header-nav.php' );
 
-// 获取文章列表
+// Get the post list
 
 $paged = get_query_var( 'paged' ) ? get_query_var( 'paged' ) : 1;
 $args = array(

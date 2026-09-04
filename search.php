@@ -18,19 +18,19 @@ include( 'templates/header-nav.php' );
 <?php include( 'templates/header-banner.php' ); ?>
 	<div id="search" class="s-search">
 		<form name="formsearch" method="get" action="<?php bloginfo('url'); ?>?s=" id="super-search-fm">
-            <input type="text" id="search-text" name="s" class="search-keyword" placeholder="<?php _e('输入关键字搜索','i_theme') ?>" style="outline:0"/> 
+            <input type="text" id="search-text" name="s" class="search-keyword" placeholder="<?php _e('Enter a keyword to search','i_theme') ?>" style="outline:0"/> 
             <button type="submit" οnmοuseοut="this.className='select_class'" οnmοuseοver="this.className='select_over'" ><i class="fa fa-search "></i></button>
         </form>
 	</div>
 
 	<div class="row">
 		<div class="col-12 col-lg-8 mx-auto">
-			<h4 class="text-gray"><i class="fa fa-search" style="margin-right: 27px;"></i>“<?php echo $s; ?>” <?php _e('的搜索结果','i_theme'); ?></h4>
+			<h4 class="text-gray"><i class="fa fa-search" style="margin-right: 27px;"></i><?php _e('Search results for','i_theme'); ?> “<?php echo $s; ?>”</h4>
         	<div class="row">
                  
 			<?php if ( !have_posts() ) : ?>
 				<div class="col-lg-12">
-            		<div class="nothing"><?php _e('没有内容','i_theme') ?></div>
+            		<div class="nothing"><?php _e('No content found','i_theme') ?></div>
           		</div>
     		<?php endif; ?>
 			
@@ -56,7 +56,7 @@ include( 'templates/header-nav.php' );
 			    ));?>
 			</div>
 			<div style="text-align:center;margin-top:50px;margin-bottom:30px;">
-			<a href="<?php bloginfo('url') ?>" class="but-home "><?php _e('返回主页','i_theme') ?></a>
+			<a href="<?php bloginfo('url') ?>" class="but-home "><?php _e('Back to Home','i_theme') ?></a>
 			</div>
 		</div>
 	</div>

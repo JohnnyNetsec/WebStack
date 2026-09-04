@@ -29,7 +29,7 @@ if( ! function_exists( 'cs_get_icons' ) ) {
           }
 
         } else {
-          echo '<h4 class="cs-icon-title">'. esc_html__( '错误！不能加载json文件', 'cs-framework' ) .'</h4>';
+          echo '<h4 class="cs-icon-title">'. esc_html__( 'Error! Could not load the JSON file', 'cs-framework' ) .'</h4>';
         }
 
       }
@@ -79,9 +79,9 @@ if( ! function_exists( 'cs_export_options' ) ) {
 if( ! function_exists( 'cs_set_icons' ) ) {
   function cs_set_icons() {
 
-    echo '<div id="cs-icon-dialog" class="cs-dialog" title="'. esc_html__( '添加Icon', 'cs-framework' ) .'">';
-    echo '<div class="cs-dialog-header cs-text-center"><input type="text" placeholder="'. esc_html__( '查找Icon...', 'cs-framework' ) .'" class="cs-icon-search" /></div>';
-    echo '<div class="cs-dialog-load"><div class="cs-icon-loading">'. esc_html__( '加载...', 'cs-framework' ) .'</div></div>';
+    echo '<div id="cs-icon-dialog" class="cs-dialog" title="'. esc_html__( 'Add Icon', 'cs-framework' ) .'">';
+    echo '<div class="cs-dialog-header cs-text-center"><input type="text" placeholder="'. esc_html__( 'Search icons...', 'cs-framework' ) .'" class="cs-icon-search" /></div>';
+    echo '<div class="cs-dialog-load"><div class="cs-icon-loading">'. esc_html__( 'Loading...', 'cs-framework' ) .'</div></div>';
     echo '</div>';
 
   }

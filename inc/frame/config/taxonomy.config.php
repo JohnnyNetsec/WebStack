@@ -14,44 +14,44 @@ if ( ! defined( 'ABSPATH' ) ) { die; } // Cannot access pages directly.
 
 $options[] = array(
     'id' => 'favorites_meta',
-    'title' => '图标设置',
+    'title' => 'Icon settings',
     'taxonomy' => 'favorites',
     'data_type' => 'unserialize',
     'fields' => array(
         array(
             'type'    => 'notice',
-            'content' => '<h2 style="color: red;">'.__('注意，最多2级，且父级不应有内容','i_theme').'</h2>',
+            'content' => '<h2 style="color: red;">'.__('Note: two levels at most, and parent categories should have no content','i_theme').'</h2>',
             'class'   => 'info',
         ),
         array(
             'id' => '_view_user',
             'type' => 'radio',
-            'title' => '可查看用户',
+            'title' => 'Who can view',
             'class'   => 'horizontal',
             'options' => array(
-                '1' => '仅管理员可见',
-                '2' => '登陆可见',
-                '0' => '所有人',
+                '1' => 'Administrators only',
+                '2' => 'Logged-in users',
+                '0' => 'Everyone',
             ),
             'default' => '0',
-            'after' => '注意：分类下的网址不受此值影响<br />权限跟随父级，如果父级设置为“仅管理员可见”，则子级也只有管理员可见',
+            'after' => 'Note: sites inside this category are not affected by this setting.<br />Permissions follow the parent: if the parent is set to "Administrators only", its children are visible to administrators only as well.',
         ),
         array(
             'id' => '_term_ico',
             'type' => 'icon',
-            'title' => '选择菜单图标',
+            'title' => 'Menu icon',
             'default' => 'fa fa-chrome'
         ),
         array(
             'id' => '_term_order',
             'type' => 'text',
-            'title' => '排序',
-            'after' =>'数字越大越靠前',
+            'title' => 'Order',
+            'after' =>'Higher numbers come first',
             'default'   => '0',
         ),
         array(
             'type'    => 'notice',
-            'content' => '<b><span style="color:red">注意：</span>如果添加新的分类后首页没有显示，请检测“排序”字段有没有值，如果没有，请设置一个值，默认为 0。</b>',
+            'content' => '<b><span style="color:red">Note:</span> if a new category does not show up on the homepage, check that its Order field has a value. If it is empty, set one - the default is 0.</b>',
             'class'   => 'info',
         ),
     ),

@@ -46,7 +46,7 @@ if ( ! function_exists( 'cs_add_element' ) ) {
       $element->output();
       $output .= ob_get_clean();
     } else {
-      $output .= '<p>'. esc_html__( '此字段不可用！', 'cs-framework' ) .'</p>';
+      $output .= '<p>'. esc_html__( 'This field is not available!', 'cs-framework' ) .'</p>';
     }
 
     $output .= ( isset( $field['title'] ) ) ? '</div>' : '';

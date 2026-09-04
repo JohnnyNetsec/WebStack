@@ -79,7 +79,7 @@ class CSFramework_Shortcode_Manager extends CSFramework_Abstract{
     $post_type = ( isset( $post->post_type ) ) ? $post->post_type : '';
 
     if( ! in_array( $post_type, $this->exclude_post_types ) ) {
-      echo '<a href="#" class="button button-primary cs-shortcode" data-editor-id="'. $editor_id .'">'. esc_html__( '添加短代码', 'cs-framework' ) .'</a>';
+      echo '<a href="#" class="button button-primary cs-shortcode" data-editor-id="'. $editor_id .'">'. esc_html__( 'Add Shortcode', 'cs-framework' ) .'</a>';
     }
 
   }
@@ -87,9 +87,9 @@ class CSFramework_Shortcode_Manager extends CSFramework_Abstract{
   // shortcode dialog
   public function shortcode_dialog() {
   ?>
-    <div id="cs-shortcode-dialog" class="cs-dialog" title="<?php esc_html_e( '添加短代码', 'cs-framework' ); ?>">
+    <div id="cs-shortcode-dialog" class="cs-dialog" title="<?php esc_html_e( 'Add Shortcode', 'cs-framework' ); ?>">
       <div class="cs-dialog-header">
-        <select class="<?php echo ( is_rtl() ) ? 'chosen-rtl ' : ''; ?>cs-dialog-select" data-placeholder="<?php esc_html_e( '选择一个短代码', 'cs-framework' ); ?>">
+        <select class="<?php echo ( is_rtl() ) ? 'chosen-rtl ' : ''; ?>cs-dialog-select" data-placeholder="<?php esc_html_e( 'Select a shortcode', 'cs-framework' ); ?>">
           <option value=""></option>
           <?php
             foreach ( $this->options as $group ) {
@@ -105,7 +105,7 @@ class CSFramework_Shortcode_Manager extends CSFramework_Abstract{
       </div>
       <div class="cs-dialog-load"></div>
       <div class="cs-insert-button hidden">
-        <a href="#" class="button button-primary cs-dialog-insert"><?php esc_html_e( '插入短代码', 'cs-framework' ); ?></a>
+        <a href="#" class="button button-primary cs-dialog-insert"><?php esc_html_e( 'Insert Shortcode', 'cs-framework' ); ?></a>
       </div>
     </div>
   <?php

@@ -1,38 +1,38 @@
 # WebStack
-WordPress 版 WebStack 主题。<a href="http://webstack.iotheme.cn/">前往演示站</a>
+The WordPress version of the WebStack theme. <a href="http://webstack.iotheme.cn/">Visit the demo site</a>
 <br/>
 
-### 声明
-当你使用 WebStack 主题发布文章、文字、图片、视频等内容均属于你自己的行为，你的这些行为所带来的安全或法律风险均需自行承担。
+### Disclaimer
+Anything you publish with the WebStack theme — articles, text, images, video and so on — is your own doing, and any security or legal risk arising from it is yours to bear.
 
 
-“Webstack Pro”是作者在19年尝试的一个收费项目，现已不在维护支持，且与<a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a>无关，应当时名字欠缺考虑，给<a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a>带来了不必要的麻烦，在此道歉。<br/>
-现今网络上流传的“Webstack Pro”版本均为盗用作者19年的内容，与作者和<a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a>无关。
+"Webstack Pro" was a paid project the author tried out in 2019. It is no longer maintained or supported, and it has nothing to do with <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a>. The name was poorly chosen at the time and caused <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a> unnecessary trouble, for which the author apologises.<br/>
+Any "Webstack Pro" builds circulating online today are stolen copies of the author's 2019 work and are unconnected to the author or <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a>.
 
-### 首页截图
+### Homepage screenshot
 <br/>
 
 ![Thumbnail_index](https://owen0o0.github.io/ioStaticResources/webstack/01.png)
 <br/>
 
-### 环境要求
+### Requirements
 + WordPress 4.4+
-+ WordPress 伪静态
++ WordPress pretty permalinks
 + PHP 5.7+ 7.0+
 <br/>
 
-### 安装指南
-+ 安装 WordPress ，教程百度
-+ 设置伪静态（下方规则按自己服务器环境二选一）
+### Installation
++ Install WordPress (there are plenty of guides online)
++ Set up pretty permalinks (pick whichever of the rules below matches your server)
 ```
-# Nginx规则
+# Nginx rule
 location /
 {
     try_files $uri $uri/ /index.php?$args;
 }
 rewrite /wp-admin$ $scheme://$host$uri/ permanent;
 
-# Apache 规则
+# Apache rule
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteBase /
@@ -42,38 +42,38 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule . /index.php [L]
 </IfModule>
 ```
-+ WordPress 后台「主题」栏目 -> 上传主题 -> 启用主题，或者在 /wp-content/themes 文件夹新建webstack文件夹，并上传所有文件
-+ 果然点击地址出现404，请到WordPress 后台「设置」栏目 -> 固定链接 -> 保存更改
-+ 反馈交♂流：<a href="https://www.iowen.cn" target="_blank">一为忆</a>
++ In the WordPress admin go to "Appearance" -> Upload Theme -> Activate. Alternatively, create a `webstack` folder under /wp-content/themes and upload all the files into it
++ If your links return a 404, go to "Settings" -> Permalinks in the WordPress admin and click Save Changes
++ Feedback: <a href="https://www.iowen.cn" target="_blank">iowen</a>
 
 <br/>
 
-### 主题使用
-+ 在 WordPress 后台“网址”文章类型下添加内容
-+ 分类最多两级，且父级不要添加内容
-+ 可以不添加网址图片，主题会自动获取目标网址的 favicon 图标
-+ 导航菜单栏标题前面的图标请在分类图像描述中填入（参考下图），图标样式请参考fontawesome
+### Using the theme
++ Add your entries under the "Sites" post type in the WordPress admin
++ Categories go two levels deep at most, and parent categories should not hold entries of their own
++ Site images are optional — the theme falls back to fetching the target site's favicon automatically
++ The icon shown in front of a navigation menu title comes from the category image description (see the screenshot below); icon styles follow Font Awesome
 ![Thumbnail_index](https://owen0o0.github.io/ioStaticResources/webstack/02.png)
-+ 增加分类快速添加图标的方法
++ A quicker way to add icons to a category
 ![Thumbnail_index](https://owen0o0.github.io/ioStaticResources/webstack/07.png)
-+ 导航菜单栏下方可以添加自定义菜单，在后台的外观-->菜单里设置，在菜单的css类添加图标（参考下图），图标样式请参考fontawesome
++ Custom menus can be added below the navigation menu, under Appearance -> Menus in the admin. Set the icon in the menu item's CSS class field (see the screenshot below); icon styles follow Font Awesome
 ![Thumbnail_index](https://owen0o0.github.io/ioStaticResources/webstack/03.png)
-+ 如果菜单里没有css类，请按下图添加
++ If the CSS class field is missing from your menu, enable it as shown below
 ![Thumbnail_index](https://owen0o0.github.io/ioStaticResources/webstack/04.jpg)
-+ <a href="https://www.iotheme.cn/store/onenav.html" target="_blank">如果你有更多功能需求，点我-></a>
++ <a href="https://www.iotheme.cn/store/onenav.html" target="_blank">Need more features? Click here -></a>
 <br/>
 
-### 后台截图
+### Admin screenshots
 <br/>
 
 ![Thumbnail_index](https://owen0o0.github.io/ioStaticResources/webstack/05.jpg)
 ![Thumbnail_index](https://owen0o0.github.io/ioStaticResources/webstack/06.png)
 <br/>
 
-### 感谢
-感谢 <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a> 的前台设计
+### Credits
+Thanks to <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a> for the front-end design.
 <br/>
 
-### 更新
-<a href="https://github.com/owen0o0/WebStack/releases" target="_blank">更新日志</a>
-更新方法为替换源文件，或者在wordpress后台删除主题，然后重新安装主题
+### Updates
+<a href="https://github.com/owen0o0/WebStack/releases" target="_blank">Changelog</a>
+To update, replace the source files, or delete the theme in the WordPress admin and install it again.

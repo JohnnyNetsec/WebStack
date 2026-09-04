@@ -19,7 +19,7 @@ class CSFramework_Option_group extends CSFramework_Options {
 
     $fields      = array_values( $this->field['fields'] );
     $last_id     = ( is_array( $this->value ) ) ? max( array_keys( $this->value ) ) : 0;
-    $acc_title   = ( isset( $this->field['accordion_title'] ) ) ? $this->field['accordion_title'] : esc_html__( '添加', 'cs-framework' );
+    $acc_title   = ( isset( $this->field['accordion_title'] ) ) ? $this->field['accordion_title'] : esc_html__( 'Add', 'cs-framework' );
     $field_title = ( isset( $fields[0]['title'] ) ) ? $fields[0]['title'] : $fields[1]['title'];
     $field_id    = ( isset( $fields[0]['id'] ) ) ? $fields[0]['id'] : $fields[1]['id'];
     $el_class    = ( isset( $this->field['title'] ) ) ? sanitize_title( $field_title ) : 'no-title';
@@ -42,7 +42,7 @@ class CSFramework_Option_group extends CSFramework_Options {
         $field_default  = ( isset( $field['default'] ) ) ? $field['default'] : '';
         echo cs_add_element( $field, $field_default, $unique );
       }
-      echo '<div class="cs-element cs-text-right cs-remove"><a href="#" class="button cs-warning-primary cs-remove-group">'. esc_html__( '移除', 'cs-framework' ) .'</a></div>';
+      echo '<div class="cs-element cs-text-right cs-remove"><a href="#" class="button cs-warning-primary cs-remove-group">'. esc_html__( 'Remove', 'cs-framework' ) .'</a></div>';
       echo '</div>';
 
     echo '</div>';
@@ -74,7 +74,7 @@ class CSFramework_Option_group extends CSFramework_Options {
             echo cs_add_element( $field, $value, $unique );
           }
 
-          echo '<div class="cs-element cs-text-right cs-remove"><a href="#" class="button cs-warning-primary cs-remove-group">'. esc_html__( '移除', 'cs-framework' ) .'</a></div>';
+          echo '<div class="cs-element cs-text-right cs-remove"><a href="#" class="button cs-warning-primary cs-remove-group">'. esc_html__( 'Remove', 'cs-framework' ) .'</a></div>';
           echo '</div>';
           echo '</div>';
 

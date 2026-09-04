@@ -172,12 +172,12 @@ class CSFramework extends CSFramework_Abstract {
       if( is_array( $decode_string ) ) {
         return $decode_string;
       }
-      $add_errors[] = $this->add_settings_error( esc_html__( '成功导入备份选项。', 'cs-framework' ), 'updated' );
+      $add_errors[] = $this->add_settings_error( esc_html__( 'Backup options imported successfully.', 'cs-framework' ), 'updated' );
     }
 
     // reset all options
     if ( isset( $request['resetall'] ) ) {
-      $add_errors[] = $this->add_settings_error( esc_html__( '默认选项恢复。', 'cs-framework' ), 'updated' );
+      $add_errors[] = $this->add_settings_error( esc_html__( 'Default options restored.', 'cs-framework' ), 'updated' );
       return;
     }
 
@@ -196,7 +196,7 @@ class CSFramework extends CSFramework_Abstract {
           }
         }
       }
-      $add_errors[] = $this->add_settings_error( esc_html__( '当前节点已恢复到默认选项。', 'cs-framework' ), 'updated' );
+      $add_errors[] = $this->add_settings_error( esc_html__( 'This section has been reset to its default options.', 'cs-framework' ), 'updated' );
     }
 
     // option sanitize and validate
@@ -371,17 +371,17 @@ class CSFramework extends CSFramework_Abstract {
       echo '<h1>'. $this->settings['framework_title'] .'</h1>';
       echo '<fieldset>';
 
-      echo ( $this->settings['ajax_save'] ) ? '<span id="cs-save-ajax">'. esc_html__( '设置已保存', 'cs-framework' ) .'</span>' : '';
+      echo ( $this->settings['ajax_save'] ) ? '<span id="cs-save-ajax">'. esc_html__( 'Settings saved', 'cs-framework' ) .'</span>' : '';
 
-      submit_button( esc_html__( '保存', 'cs-framework' ), 'primary cs-save', 'save', false, array( 'data-save' => esc_html__( '保存...', 'cs-framework' ) ) );
-      submit_button( esc_html__( '恢复', 'cs-framework' ), 'secondary cs-restore cs-reset-confirm', $this->unique .'[reset]', false );
+      submit_button( esc_html__( 'Save', 'cs-framework' ), 'primary cs-save', 'save', false, array( 'data-save' => esc_html__( 'Saving...', 'cs-framework' ) ) );
+      submit_button( esc_html__( 'Restore', 'cs-framework' ), 'secondary cs-restore cs-reset-confirm', $this->unique .'[reset]', false );
 
       if( $this->settings['show_reset_all'] ) {
-        submit_button( esc_html__( '重置所有选项', 'cs-framework' ), 'secondary cs-restore cs-warning-primary cs-reset-confirm', $this->unique .'[resetall]', false );
+        submit_button( esc_html__( 'Reset all options', 'cs-framework' ), 'secondary cs-restore cs-warning-primary cs-reset-confirm', $this->unique .'[resetall]', false );
       }
 
       echo '</fieldset>';
-      echo ( empty( $has_nav ) ) ? '<a href="#" class="cs-expand-all"><i class="fa fa-eye-slash"></i> '. esc_html__( '显示所有选项', 'cs-framework' ) .'</a>' : '';
+      echo ( empty( $has_nav ) ) ? '<a href="#" class="cs-expand-all"><i class="fa fa-eye-slash"></i> '. esc_html__( 'Show all options', 'cs-framework' ) .'</a>' : '';
       echo '<div class="clear"></div>';
       echo '</div>';
       echo '</div>'; // end .cs-header
@@ -468,8 +468,8 @@ class CSFramework extends CSFramework_Abstract {
       echo '</div>'; // end .cs-body
 
       echo '<footer class="cs-footer">';
-      echo '<div class="cs-block-left">'.esc_html__('运行在', 'cs-framework' ).'： WordPress '. get_bloginfo('version') .' / PHP '. PHP_VERSION .'</div>';
-      echo '<div class="cs-block-right">&copy; 2019 Theme By <a href="https://www.iowen.cn" target="_blank" style="color: #888;text-decoration: none;"> 一为</a></div>';
+      echo '<div class="cs-block-left">'.esc_html__('Running on', 'cs-framework' ).'： WordPress '. get_bloginfo('version') .' / PHP '. PHP_VERSION .'</div>';
+      echo '<div class="cs-block-right"></div>';
       echo '<div class="clear"></div>';
       echo '</footer>'; // end .cs-footer
 

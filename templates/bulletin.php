@@ -29,7 +29,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 				<?php wp_reset_query(); ?>
             </ul>
 		</div>
-        <a title="关闭" href="javascript:;" rel="external nofollow"  onClick="$('#bulletin_box').slideUp('slow');" style="margin-left:auto"><i class="fa fa-remove" style="line-height:25px"></i></a>
+        <a title="Close" href="javascript:;" rel="external nofollow"  onClick="$('#bulletin_box').slideUp('slow');" style="margin-left:auto"><i class="fa fa-remove" style="line-height:25px"></i></a>
     </div>
 </div>
 <script> 
