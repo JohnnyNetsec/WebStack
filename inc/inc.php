@@ -28,6 +28,7 @@ require_once get_theme_file_path() .'/inc/post-type.php';
 require_once get_theme_file_path() .'/inc/fav-content.php';
 require_once get_theme_file_path() .'/inc/ajax.php';
 require_once get_theme_file_path() .'/inc/health-check.php';
+require_once get_theme_file_path() .'/inc/bookmarks.php';
 
 
 add_action('after_setup_theme', 'my_theme_setup');

@@ -97,6 +97,33 @@ every "Sites" entry is still reachable.
   permanent delete, so anything removed by mistake can still be restored from
   Sites > Trash.
 
+### Import/Export Bookmarks
+Under **Sites -> Import/Export** in the admin, you can bring in an existing bookmark
+collection or take one back out.
+
++ **Import** accepts a standard bookmarks HTML export from Chrome, Edge, or any
+  browser using the same format (Firefox, Safari, etc.).
+  - Folders become Site Categories automatically, matching an existing category
+    of the same name in the same place rather than creating a duplicate. Folders
+    nested more than two levels deep (the theme's own category depth limit) are
+    flattened -- their bookmarks attach to the deepest category still allowed
+    rather than being dropped or erroring out.
+  - A link already in your library, or repeated more than once inside the file
+    itself, is skipped rather than imported again, using the same address
+    comparison Link Health uses (so the two features always agree on what counts
+    as "the same link").
+  - Nothing is written to your site until you confirm. Uploading a file only
+    shows a **preview**: how many links were found, how many are duplicates or
+    not usable, how many new categories would be created, and how many would
+    actually be added -- so you can decide whether to proceed before anything
+    changes.
+  - Confirming imports in short batches with a progress bar, the same approach
+    Link Health uses for checking links, so even a large bookmark collection
+    never risks timing out the request.
++ **Export** downloads every Sites entry as a bookmarks HTML file, grouped by its
+  current Site Category (matching the same two-level structure), ready to import
+  into a browser or back into this same importer.
+
 ### Admin screenshots
 <br/>
 
