@@ -2,10 +2,10 @@
 /*
  * @Theme Name:One Nav
  * @Theme URI:https://www.iotheme.cn/
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2021-06-03 08:56:01
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2024-07-30 22:08:25
  * @FilePath: /WebStack/taxonomy-favorites.php
  * @Description: Site category page

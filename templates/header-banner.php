@@ -2,10 +2,10 @@
 /*
  * @Theme Name:WebStack
  * @Theme URI:https://www.iotheme.cn/
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2019-02-22 21:26:02
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2024-07-30 17:31:38
  * @FilePath: /WebStack/templates/header-banner.php
  * @Description: 

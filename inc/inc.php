@@ -2,10 +2,10 @@
 /*
  * @Theme Name:WebStack
  * @Theme URI:https://www.iotheme.cn/
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2019-02-22 21:26:02
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2024-07-30 23:22:56
  * @FilePath: /WebStack/inc/inc.php
  * @Description: 
@@ -34,6 +34,37 @@ require_once get_theme_file_path() .'/inc/bookmarks.php';
 add_action('after_setup_theme', 'my_theme_setup');
 function my_theme_setup(){
     load_theme_textdomain( 'i_theme', get_template_directory() . '/languages' );
+}
+
+/**
+ * Rebrand an already-configured site's bundled logo/icon assets.
+ *
+ * Changing a field's 'default' in framework.config.php only affects a
+ * brand new install -- this framework only ever writes its defaults into
+ * the database once, the first time its options row is created from
+ * completely empty. A site that has already been set up (this one
+ * included) keeps whatever was stored back then, so the config change on
+ * its own would never actually show up here. This checks each of these
+ * image options against the theme's OLD bundled default file: if it still
+ * matches exactly, the site owner never customized it, so it's safe to
+ * switch to the new NetSec-branded asset. Anything that no longer matches
+ * -- because it was genuinely customized -- is left untouched.
+ */
+add_action( 'after_setup_theme', 'io_netsec_rebrand_defaults' );
+function io_netsec_rebrand_defaults() {
+    $map = array(
+        'logo_normal' => array( 'old' => 'logo@2x.png',           'new' => 'netsec-logo.svg' ),
+        'logo_small'  => array( 'old' => 'logo-collapsed@2x.png', 'new' => 'netsec-logo-mark.svg' ),
+        'favicon'     => array( 'old' => 'favicon.png',           'new' => 'netsec-favicon.png' ),
+        'apple_icon'  => array( 'old' => 'app-ico.png',           'new' => 'netsec-app-icon.png' ),
+        'login_logo'  => array( 'old' => 'logo_dark@2x.png',      'new' => 'netsec-logo-dark.svg' ),
+    );
+    foreach ( $map as $option_id => $files ) {
+        $current = io_get_option( $option_id );
+        if ( $current === get_theme_file_uri( '/images/' . $files['old'] ) ) {
+            cs_set_option( $option_id, get_theme_file_uri( '/images/' . $files['new'] ) );
+        }
+    }
 }
 
 // Disable post revisions
@@ -195,7 +226,11 @@ add_action('in_admin_header', function(){
 });
 add_filter('admin_footer_text', 'left_admin_footer_text');
 function left_admin_footer_text($text) {
-    $text = '<span id="footer-thankyou"></span>';
+    $text = '<span id="footer-thankyou">' . sprintf(
+        /* translators: %s: linked theme author name */
+        __( 'WebStack theme by %s', 'i_theme' ),
+        '<a href="https://51sec.org" target="_blank" rel="noopener">NetSec</a>'
+    ) . '</span>';
     return $text;
 }
 

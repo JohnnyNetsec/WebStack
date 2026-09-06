@@ -2,10 +2,10 @@
 /*
  * @Theme Name:WebStack
  * @Theme URI:https://www.iotheme.cn/
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2020-02-22 21:26:05
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2024-07-30 19:17:10
  * @FilePath: /WebStack/search.php
  * @Description: 

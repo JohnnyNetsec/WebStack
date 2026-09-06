@@ -2,10 +2,10 @@
 /*
  * @Theme Name:WebStack
  * @Theme URI:https://www.iotheme.cn/
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2021-08-22 19:00:30
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2024-07-30 19:27:48
  * @FilePath: /WebStack/inc/frame/config/taxonomy.config.php
  * @Description: 

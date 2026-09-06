@@ -2,10 +2,10 @@
 /*
  * @Theme Name:WebStack
  * @Theme URI:https://github.com/JohnnyNetsec/WebStack
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2019-02-22 21:26:02
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2023-04-24 00:42:32
  * @FilePath: \WebStack\footer.php
  * @Description: 
@@ -30,6 +30,7 @@ if ($police_icp = io_get_option('police_icp')) {
                 <div class="footer-inner">
                     <div class="footer-text">
                         Copyright © <?php echo date('Y') ?> <?php bloginfo('name'); ?> <?php echo $_icp ?>
+                        <span class="io-theme-credit">| <?php esc_html_e( 'Theme by', 'i_theme' ); ?> <a href="https://51sec.org" target="_blank" rel="noopener">NetSec</a></span>
                     </div>
                 </div>
             </footer>

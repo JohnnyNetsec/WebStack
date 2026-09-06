@@ -2,6 +2,9 @@
 The WordPress version of the WebStack theme. <a href="http://bestit.eu.org/">Visit the demo site</a>
 <br/>
 
+**Author:** NetSec ([51sec.org](https://51sec.org)) &middot; **Contact:** [jyan@51sec.org](mailto:jyan@51sec.org) &middot; **Source:** [github.com/JohnnyNetsec/WebStack](https://github.com/JohnnyNetsec/WebStack)
+<br/>
+
 ### Disclaimer
 Anything you publish with the WebStack theme — articles, text, images, video and so on — is your own doing, and any security or legal risk arising from it is yours to bear.
 
@@ -44,7 +47,7 @@ RewriteRule . /index.php [L]
 ```
 + In the WordPress admin go to "Appearance" -> Upload Theme -> Activate. Alternatively, create a `webstack` folder under /wp-content/themes and upload all the files into it
 + If your links return a 404, go to "Settings" -> Permalinks in the WordPress admin and click Save Changes
-+ Feedback: <a href="https://www.iowen.cn" target="_blank">iowen</a>
++ Feedback: <a href="https://51sec.org" target="_blank">NetSec</a> (<a href="mailto:jyan@51sec.org">jyan@51sec.org</a>)
 
 <br/>
 
@@ -135,7 +138,7 @@ collection or take one back out.
 <br/>
 
 ### Credits
-Thanks to <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a> for the front-end design.
+Maintained by <a href="https://51sec.org" target="_blank">NetSec</a>. Thanks to <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a> for the front-end design.
 <br/>
 
 ### Updates

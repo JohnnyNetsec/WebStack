@@ -2,10 +2,10 @@
 /*
  * @Theme Name:WebStack
  * @Theme URI:https://www.iotheme.cn/
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2019-02-22 21:26:02
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2024-07-30 23:21:25
  * @FilePath: /WebStack/inc/frame/config/framework.config.php
  * @Description: 
@@ -43,7 +43,7 @@ $options[] = array(
             'title' => 'Upload logo',
             'add_title' => 'Upload',
             'after'    => '<p class="cs-text-muted">'.'Recommended height: 80px',
-            'default'   => get_theme_file_uri('/images/logo@2x.png'),
+            'default'   => get_theme_file_uri('/images/netsec-logo.svg'),
         ),
         array(
             'id' => 'logo_small',
@@ -51,21 +51,21 @@ $options[] = array(
             'title' => 'Square logo',
             'add_title' => 'Upload',
             'after'    => '<p class="cs-text-muted">'.'Recommended size: 80x80',
-            'default'   => get_theme_file_uri('/images/logo-collapsed@2x.png'),
+            'default'   => get_theme_file_uri('/images/netsec-logo-mark.svg'),
         ),
         array(
             'id' => 'favicon',
             'type' => 'image',
             'title' => 'Upload favicon',
             'add_title' => 'Upload',
-            'default'   => get_theme_file_uri('/images/favicon.png'),
+            'default'   => get_theme_file_uri('/images/netsec-favicon.png'),
         ),
         array(
             'id' => 'apple_icon',
             'type' => 'image',
             'title' => 'Upload Apple touch icon',
             'add_title' => 'Upload',
-            'default'   => get_theme_file_uri('/images/app-ico.png'),
+            'default'   => get_theme_file_uri('/images/netsec-app-icon.png'),
         ),
         array(
             'id'      => 'login_beautify',
@@ -87,7 +87,7 @@ $options[] = array(
             'title' => 'Login page logo',
             'add_title' => 'Upload',
             'after'    => '<p class="cs-text-muted">'.'Recommended height: 80px',
-            'default'   => get_theme_file_uri('/images/logo_dark@2x.png'),
+            'default'   => get_theme_file_uri('/images/netsec-logo-dark.svg'),
 			'dependency' => array( 'login_beautify', '==', true )
         ),
         array(

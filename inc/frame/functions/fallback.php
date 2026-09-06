@@ -1,9 +1,9 @@
 <?php if ( ! defined( 'ABSPATH' ) ) { die; } // Cannot access pages directly.
 /*
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2020-02-22 21:26:04
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2021-12-20 22:47:45
  * @FilePath: \WebStack\inc\frame\functions\fallback.php
  * @Description: 

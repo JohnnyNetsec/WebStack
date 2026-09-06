@@ -1,9 +1,9 @@
 <?php
 /*
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2021-02-21 21:26:02
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2024-07-30 19:49:22
  * @FilePath: /WebStack/header.php
  * @Description: 
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 <?php else : ?>
 <title><?php wp_title( '|', true, 'right' ); bloginfo('name'); ?></title>
 <?php endif; ?>
-<meta name="theme-color" content="#2C2E2F" />
+<meta name="theme-color" content="#232629" id="io-theme-color-meta" />
 <meta name="keywords" content="<?php echo io_get_option('seo_home_keywords') ?>">
 <meta name="description" content="<?php echo io_get_option('seo_home_desc') ?>">
 <meta property="og:type" content="article">
@@ -65,7 +65,10 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
             return serverDark;
         }
         function apply(pref){
-            document.body.classList.toggle('black', resolveIsDark(pref));
+            var isDark = resolveIsDark(pref);
+            document.body.classList.toggle('black', isDark);
+            var meta = document.getElementById('io-theme-color-meta');
+            if (meta) { meta.setAttribute('content', isDark ? '#0e1013' : '#232629'); }
         }
         apply(readPref());
         window.ioApplyThemePref = apply;

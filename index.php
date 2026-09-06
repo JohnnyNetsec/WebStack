@@ -1,9 +1,9 @@
 <?php 
 /*
- * @Author: iowen
- * @Author URI: https://www.iowen.cn/
+ * @Author: NetSec
+ * @Author URI: https://51sec.org
  * @Date: 2024-07-30 17:15:18
- * @LastEditors: iowen
+ * @LastEditors: NetSec
  * @LastEditTime: 2024-07-30 22:18:04
  * @FilePath: /WebStack/index.php
  * @Description: 
