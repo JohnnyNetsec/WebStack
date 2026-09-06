@@ -1,7 +1,7 @@
 <?php 
 /*
  * @Theme Name:WebStack
- * @Theme URI:https://github.com/owen0o0/WebStack
+ * @Theme URI:https://github.com/JohnnyNetsec/WebStack
  * @Author: iowen
  * @Author URI: https://www.iowen.cn/
  * @Date: 2019-02-22 21:26:02

@@ -75,5 +75,5 @@ Thanks to <a href="https://github.com/WebStackPage/WebStackPage.github.io" targe
 <br/>
 
 ### Updates
-<a href="https://github.com/owen0o0/WebStack/releases" target="_blank">Changelog</a>
+<a href="https://github.com/JohnnyNetsec/WebStack/releases" target="_blank">Changelog</a>
 To update, replace the source files, or delete the theme in the WordPress admin and install it again.
