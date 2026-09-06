@@ -12,14 +12,17 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 function fav_con($mid, $visible) { ?>
-        <h4 class="text-gray" style="display: inline-block;"><i class="icon-io-tag" style="margin-right: 27px;" id="term-<?php echo $mid->term_id; ?>"></i><?php echo $mid->name; ?></h4>
-        <?php 
+        <h4 class="text-gray" style="display: inline-block;"><i class="icon-io-tag" style="margin-right: 27px;" id="term-<?php echo $mid->term_id; ?>"></i><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></h4>
+        <?php
         if($visible == 2){
             echo '<div class="login-notice">'.__('Please log in to view this category','i_theme').'</div>';
             return;
         }
         $site_n           = io_get_option('site_n');
-        $category_count   = $mid->category_count;
+        // $mid->count is the real WP_Term property (was $mid->category_count, which does
+        // not exist on a term object and always evaluated to null -- silently breaking the
+        // "more+" link below, and truncating the site_n==0 case to zero results).
+        $category_count   = (int) $mid->count;
         $count            = $site_n;
         if($site_n == 0)  $count = min(get_option('posts_per_page'),$category_count);
         if($site_n >= 0 && $count < $category_count){

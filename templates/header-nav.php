@@ -61,16 +61,26 @@ $categories = get_categories( array(
                             <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php echo $category->term_id;?>" class="smooth">
                                 <i class="<?php echo get_term_meta($category->term_id, '_term_ico',true) ?> fa-fw"></i>
                                 <span class="title"><?php echo $category->name; ?></span>
+                                <span class="io-cat-count"><?php echo (int) $category->count; ?></span>
                             </a>
-                        </li> 
+                        </li>
                         <?php }else { ?>
+                        <?php
+                        // A parent category holds no entries of its own (see README's
+                        // "parent categories should not hold entries" convention), so its
+                        // own $category->count is always 0 -- show the sum of its
+                        // children's counts instead, since that's what this group actually
+                        // represents to a visitor.
+                        $group_count = array_sum( wp_list_pluck( $children, 'count' ) );
+                        ?>
                         <li>
                             <a>
                                 <i class="<?php echo get_term_meta($category->term_id, '_term_ico',true) ?> fa-fw"></i>
                                 <span class="title"><?php echo $category->name; ?></span>
+                                <span class="io-cat-count"><?php echo (int) $group_count; ?></span>
                             </a>
                             <ul>
-                                <?php foreach ($children as $mid) { 
+                                <?php foreach ($children as $mid) {
                                     $_visible = io_is_visible(get_term_meta($mid->term_id, '_view_user', true));
                                     if ($_visible === 0) {
                                         continue;
@@ -78,7 +88,7 @@ $categories = get_categories( array(
                                 ?>
 
                                 <li>
-                                    <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php  echo $mid->term_id ;?>" class="smooth"><?php echo $mid->name; ?></a>
+                                    <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php  echo $mid->term_id ;?>" class="smooth"><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></a>
                                 </li>
                                 <?php } ?>
                             </ul>

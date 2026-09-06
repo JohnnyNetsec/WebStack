@@ -28,9 +28,42 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }  ?>
         <!-- Weather end -->
       </ul>
       <ul class="user-info-menu list-inline list-unstyled">
+        <li>
+            <span class="io-theme-toggle" role="group" aria-label="<?php esc_attr_e( 'Color scheme', 'i_theme' ); ?>">
+                <a href="#" id="io-theme-light" title="<?php esc_attr_e( 'Light', 'i_theme' ); ?>"><i class="fa fa-sun-o"></i></a>
+                <a href="#" id="io-theme-dark" title="<?php esc_attr_e( 'Dark', 'i_theme' ); ?>"><i class="fa fa-moon-o"></i></a>
+                <a href="#" id="io-theme-system" title="<?php esc_attr_e( 'Match system', 'i_theme' ); ?>"><i class="fa fa-adjust"></i></a>
+            </span>
+        </li>
         <li class="hidden-sm hidden-xs">
             <a href="https://github.com/JohnnyNetsec/WebStack" target="_blank"><i class="fa fa-github"></i> GitHub</a>
         </li>
       </ul>
     </div>
 </nav>
+<script>
+(function(){
+    var btns = {
+        light: document.getElementById('io-theme-light'),
+        dark: document.getElementById('io-theme-dark'),
+        system: document.getElementById('io-theme-system')
+    };
+    function highlight(pref){
+        for (var k in btns) {
+            if (btns[k]) btns[k].classList.toggle('active', k === pref);
+        }
+    }
+    highlight(window.ioReadThemePref ? window.ioReadThemePref() : 'system');
+    for (var key in btns) {
+        (function(k, el){
+            if (!el) return;
+            el.addEventListener('click', function(e){
+                e.preventDefault();
+                if (window.ioWriteThemePref) window.ioWriteThemePref(k);
+                if (window.ioApplyThemePref) window.ioApplyThemePref(k);
+                highlight(k);
+            });
+        })(key, btns[key]);
+    }
+})();
+</script>
