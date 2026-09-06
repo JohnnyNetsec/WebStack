@@ -1,13 +1,40 @@
-<?php 
-include "./wp-load.php";
-$url = $_GET['url'];
-$a = '';
-if( $a==$url ) {
-	$b = "";
-// echo 'true';
-} else {
-	$b = $url;
-	$b = base64_decode($b);
+<?php
+/*
+ * Interstitial redirect page for outbound site links.
+ *
+ * Reached through the "go/?$" rewrite rule, which io_template_redirect() in
+ * inc/inc.php maps to this file, so WordPress is already loaded by this point.
+ */
+if ( ! defined( 'ABSPATH' ) ) { exit; }
+
+/*
+ * Read the target out of the raw query string rather than $_GET, so that a
+ * target carrying its own query string (?a=1&b=2) survives intact -- $_GET
+ * would split it at the first unencoded "&".
+ */
+$target = '';
+if ( ! empty( $_SERVER['QUERY_STRING'] ) && preg_match( '/(?:^|&)url=(.*)$/s', $_SERVER['QUERY_STRING'], $m ) ) {
+    $target = rawurldecode( $m[1] );
+} elseif ( isset( $_GET['url'] ) ) {
+    $target = rawurldecode( $_GET['url'] );
+}
+
+/*
+ * These links used to be base64 encoded. Anything that is not already an
+ * http(s) URL is retried as base64 so that old bookmarks, shared links and
+ * search-engine-indexed URLs keep resolving.
+ */
+if ( $target !== '' && ! preg_match( '#^https?://#i', $target ) ) {
+    $legacy = base64_decode( $target, true );
+    if ( $legacy !== false && preg_match( '#^https?://#i', $legacy ) ) {
+        $target = $legacy;
+    }
+}
+
+// Only ever bounce to http(s). Anything else (javascript:, data:) goes home.
+if ( ! preg_match( '#^https?://#i', $target ) ) {
+    wp_safe_redirect( home_url() );
+    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -17,7 +44,7 @@ if( $a==$url ) {
 <meta http-equiv="content-type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width,height=device-height, initial-scale=1.0, user-scalable=no" />
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta http-equiv="refresh" content="0.1;url=<?php echo $b; ?>">
+<meta http-equiv="refresh" content="0.1;url=<?php echo esc_url( $target ); ?>">
 <meta name="robots" content="noindex,follow">
 <title><?php _e('Loading','i_theme') ?></title>
 

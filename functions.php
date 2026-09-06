@@ -1,6 +1,10 @@
 <?php
 if ( ! defined( 'ABSPATH' ) ) { exit; }
-date_default_timezone_set('Asia/Shanghai');
+// NOTE: do not call date_default_timezone_set() here. WordPress deliberately runs
+// PHP on UTC and derives local time from Settings > General > Timezone. Overriding
+// the PHP timezone desynchronises the REST API's date handling, which makes the
+// block editor fail to save with "Publishing failed" -- the bulletin post type is
+// the only one registered with show_in_rest, so it was the only one affected.
 require get_template_directory() . '/inc/inc.php';
 
    
