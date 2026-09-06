@@ -66,10 +66,22 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }  ?>
             }else{
                 $ico = $ico ?: (io_get_option('ico_url') . format_url($link_url) . io_get_option('ico_png'));
             }
+
+            $hc_dot = '';
+            if ( 'sites' === get_post_type() && class_exists( 'IO_Link_Health' ) ) {
+                $hc_status = get_post_meta( $post->ID, IO_Link_Health::META_STATUS, true );
+                if ( $hc_status ) {
+                    $hc_detail = get_post_meta( $post->ID, IO_Link_Health::META_DETAIL, true );
+                    $hc_reason = ( is_array( $hc_detail ) && ! empty( $hc_detail['message'] ) ) ? $hc_detail['message'] : '';
+                    $hc_title  = IO_Link_Health::status_label( $hc_status ) . ( $hc_reason ? ': ' . $hc_reason : '' );
+                    $hc_dot    = '<span class="io-hc-dot io-hc-dot-' . esc_attr( $hc_status ) . '" title="' . esc_attr( $hc_title ) . '"></span>';
+                }
+            }
             ?>
             <a href="<?php echo $url ?>" target="<?php echo $blank ?>" class="xe-widget xe-conversations box2 label-info" <?php echo $tooltip . ' ' . $is_html ?> title="<?php echo $title ?>">
                 <div class="xe-comment-entry">
                     <div class="xe-user-img">
+                        <?php echo $hc_dot; ?>
                         <?php if(io_get_option('lazyload')): ?>
                         <img class="img-circle lazy" src="<?php echo $default_ico; ?>" data-src="<?php echo $ico ?>" onerror="javascript:this.src='<?php echo $default_ico; ?>'" width="40" height="40">
                         <?php else: ?>

@@ -346,3 +346,9 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
 .black .siteico{background:#222}
 .black .posts-nav{color:rgba(221,221,221,.2)}
 .black .input-group-addon{color:#ddd;background:#26282a;border-color:#26282a}
+.xe-user-img{position:relative}
+.io-hc-dot{position:absolute;top:-2px;right:-2px;width:11px;height:11px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);z-index:1}
+.io-hc-dot-ok{background:#2ecc71}
+.io-hc-dot-broken{background:#e74c3c}
+.io-hc-dot-unverified{background:#f1c40f}
+.black .io-hc-dot{border-color:#2c2e2f}

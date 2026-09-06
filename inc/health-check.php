@@ -1,13 +1,14 @@
 <?php
 /**
- * Link Health Check (detection and reporting).
+ * Link Health Check.
  *
  * Checks the URL stored in the _sites_link meta of every "sites" entry and
- * records whether it is reachable. Results are shown under Sites > Link Health.
+ * records whether it is reachable. Results are shown under Sites > Link Health,
+ * where broken entries can be moved to Trash individually or in bulk.
  *
- * This is the detection half of the feature. It never modifies or deletes any
- * content: scheduled runs only ever report. Bulk trashing is a separate step
- * that is deliberately not wired up yet.
+ * Scheduled runs only ever update the report. Trashing is always a deliberate,
+ * user-initiated action (a button click), and always moves to Trash rather
+ * than deleting permanently, so it is recoverable from the Sites trash.
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 
@@ -53,6 +54,7 @@ class IO_Link_Health {
 		add_action( 'wp_ajax_io_hc_start',   array( __CLASS__, 'ajax_start' ) );
 		add_action( 'wp_ajax_io_hc_step',    array( __CLASS__, 'ajax_step' ) );
 		add_action( 'wp_ajax_io_hc_recheck', array( __CLASS__, 'ajax_recheck' ) );
+		add_action( 'wp_ajax_io_hc_trash',   array( __CLASS__, 'ajax_trash' ) );
 
 		add_filter( 'cron_schedules', array( __CLASS__, 'cron_schedules' ) );
 		add_action( self::CRON_SCAN, array( __CLASS__, 'run_scheduled' ) );
@@ -434,6 +436,43 @@ class IO_Link_Health {
 		) );
 	}
 
+	/**
+	 * Move one or more Sites entries to Trash. Trash only, never a permanent
+	 * delete, so a wrong call is always recoverable from the Sites trash.
+	 */
+	public static function ajax_trash() {
+		self::guard();
+
+		$ids = isset( $_POST['post_ids'] ) ? (array) wp_unslash( $_POST['post_ids'] ) : array();
+		$ids = array_unique( array_filter( array_map( 'absint', $ids ) ) );
+
+		if ( empty( $ids ) ) {
+			wp_send_json_error( array( 'message' => __( 'Nothing was selected.', 'i_theme' ) ), 400 );
+		}
+
+		$trashed = array();
+		$skipped = 0;
+
+		foreach ( $ids as $post_id ) {
+			// Only ever act on Sites entries, and only those this user is
+			// actually allowed to delete -- never trust the ID list alone.
+			if ( self::POST_TYPE !== get_post_type( $post_id ) || ! current_user_can( 'delete_post', $post_id ) ) {
+				$skipped++;
+				continue;
+			}
+			if ( wp_trash_post( $post_id ) ) {
+				$trashed[] = $post_id;
+			} else {
+				$skipped++;
+			}
+		}
+
+		wp_send_json_success( array(
+			'trashed' => count( $trashed ),
+			'skipped' => $skipped,
+		) );
+	}
+
 	private static function public_state( $state ) {
 		return array(
 			'total'     => (int) $state['total'],
@@ -471,12 +510,19 @@ class IO_Link_Health {
 
 	private static function inline_js() {
 		$data = array(
-			'ajaxurl' => admin_url( 'admin-ajax.php' ),
-			'nonce'   => wp_create_nonce( 'io_hc_ajax' ),
-			'working' => __( 'Checking...', 'i_theme' ),
-			'done'    => __( 'Finished. Reloading...', 'i_theme' ),
-			'failed'  => __( 'The check could not be completed. Please try again.', 'i_theme' ),
-			'recheck' => __( 'Recheck', 'i_theme' ),
+			'ajaxurl'      => admin_url( 'admin-ajax.php' ),
+			'nonce'        => wp_create_nonce( 'io_hc_ajax' ),
+			'working'      => __( 'Checking...', 'i_theme' ),
+			'done'         => __( 'Finished. Reloading...', 'i_theme' ),
+			'failed'       => __( 'The check could not be completed. Please try again.', 'i_theme' ),
+			'recheck'      => __( 'Recheck', 'i_theme' ),
+			'trashOne'     => __( 'Trash', 'i_theme' ),
+			'trashing'     => __( 'Moving to Trash...', 'i_theme' ),
+			'trashFailed'  => __( 'Could not move to Trash. Please try again.', 'i_theme' ),
+			'confirmOne'   => __( 'Move this link to Trash?', 'i_theme' ),
+			/* translators: %d: number of selected links */
+			'confirmBulk'  => __( 'Move %d selected link(s) to Trash?', 'i_theme' ),
+			'selectFirst'  => __( 'Select at least one link first.', 'i_theme' ),
 		);
 
 		return 'var ioHC = ' . wp_json_encode( $data ) . ';' . <<<'JS'
@@ -530,6 +576,59 @@ jQuery(function($){
 			}
 			$a.text(ioHC.recheck);
 		}).fail(function(){ $a.text(ioHC.recheck); });
+	});
+
+	// --- select all / row selection --------------------------------------
+
+	function checkedIds(){
+		return $('.io-hc-row-check:checked').map(function(){ return $(this).val(); }).get();
+	}
+
+	function refreshBulkButton(){
+		$('#io-hc-trash-selected').prop('disabled', checkedIds().length === 0);
+	}
+
+	$('#io-hc-select-all').on('change', function(){
+		$('.io-hc-row-check').prop('checked', $(this).is(':checked'));
+		refreshBulkButton();
+	});
+
+	$(document).on('change', '.io-hc-row-check', function(){
+		if (!$(this).is(':checked')) { $('#io-hc-select-all').prop('checked', false); }
+		refreshBulkButton();
+	});
+
+	// --- trash: bulk and single, same endpoint ----------------------------
+
+	function trashIds(ids, onDone){
+		post('io_hc_trash', {post_ids: ids}).done(function(res){
+			if (res && res.success) { onDone(true, res.data); }
+			else { onDone(false, null); }
+		}).fail(function(){ onDone(false, null); });
+	}
+
+	$('#io-hc-trash-selected').on('click', function(){
+		var ids = checkedIds();
+		if (!ids.length) { alert(ioHC.selectFirst); return; }
+		if (!confirm(ioHC.confirmBulk.replace('%d', ids.length))) { return; }
+
+		var $b = $(this).prop('disabled', true);
+		var $status = $('#io-hc-trash-status').text(ioHC.trashing);
+		trashIds(ids, function(success){
+			if (success) { window.location.reload(); }
+			else { $status.text(ioHC.trashFailed); $b.prop('disabled', false); }
+		});
+	});
+
+	$(document).on('click', '.io-hc-trash-one', function(e){
+		e.preventDefault();
+		if (!confirm(ioHC.confirmOne)) { return; }
+		var $a = $(this), id = $a.data('id'), original = $a.text();
+		$a.text(ioHC.trashing);
+		trashIds([id], function(success){
+			if (success) { $a.closest('tr').fadeOut(200, function(){ $(this).remove(); }); }
+			else { $a.text(original); alert(ioHC.trashFailed); }
+		});
 	});
 });
 JS;
@@ -717,11 +816,27 @@ JS;
 			echo '<p>' . esc_html__( 'Nothing to show here yet. Run a check to populate this list.', 'i_theme' ) . '</p>';
 			return;
 		}
+
+		// Trashing is only offered on tabs that actually list candidates for it;
+		// "OK" links are shown for completeness but are not something you would
+		// normally bulk trash from this screen.
+		$show_bulk = in_array( $filter, array( 'broken', 'unverified', 'all' ), true );
 		?>
+		<?php if ( $show_bulk ) : ?>
+		<p>
+			<button type="button" class="button" id="io-hc-trash-selected" disabled>
+				<?php esc_html_e( 'Move selected to Trash', 'i_theme' ); ?>
+			</button>
+			<span id="io-hc-trash-status" style="margin-left:8px;color:#646970"></span>
+		</p>
+		<?php endif; ?>
 		<table class="wp-list-table widefat fixed striped">
 			<thead>
 				<tr>
-					<th scope="col" style="width:22%"><?php esc_html_e( 'Site', 'i_theme' ); ?></th>
+					<?php if ( $show_bulk ) : ?>
+					<th scope="col" style="width:2%"><input type="checkbox" id="io-hc-select-all"></th>
+					<?php endif; ?>
+					<th scope="col" style="width:20%"><?php esc_html_e( 'Site', 'i_theme' ); ?></th>
 					<th scope="col" style="width:26%"><?php esc_html_e( 'URL', 'i_theme' ); ?></th>
 					<th scope="col" style="width:12%"><?php esc_html_e( 'Status', 'i_theme' ); ?></th>
 					<th scope="col" style="width:24%"><?php esc_html_e( 'Reason', 'i_theme' ); ?></th>
@@ -745,12 +860,16 @@ JS;
 					$reason = 'HTTP ' . (int) $detail['code'];
 				}
 				?>
-				<tr>
+				<tr data-post-id="<?php echo esc_attr( $post_id ); ?>">
+					<?php if ( $show_bulk ) : ?>
+					<td><input type="checkbox" class="io-hc-row-check" value="<?php echo esc_attr( $post_id ); ?>"></td>
+					<?php endif; ?>
 					<td>
 						<strong><a href="<?php echo esc_url( get_edit_post_link( $post_id ) ); ?>"><?php echo esc_html( get_the_title() ? get_the_title() : __( '(no title)', 'i_theme' ) ); ?></a></strong>
 						<div class="row-actions">
 							<span class="edit"><a href="<?php echo esc_url( get_edit_post_link( $post_id ) ); ?>"><?php esc_html_e( 'Edit', 'i_theme' ); ?></a> | </span>
-							<span><a href="#" class="io-hc-recheck" data-id="<?php echo esc_attr( $post_id ); ?>"><?php esc_html_e( 'Recheck', 'i_theme' ); ?></a></span>
+							<span><a href="#" class="io-hc-recheck" data-id="<?php echo esc_attr( $post_id ); ?>"><?php esc_html_e( 'Recheck', 'i_theme' ); ?></a> | </span>
+							<span><a href="#" class="io-hc-trash-one" data-id="<?php echo esc_attr( $post_id ); ?>"><?php esc_html_e( 'Trash', 'i_theme' ); ?></a></span>
 						</div>
 					</td>
 					<td>

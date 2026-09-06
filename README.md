@@ -83,10 +83,13 @@ every "Sites" entry is still reachable.
   - A link only becomes Broken after failing two checks in a row (configurable), so
     a brief outage on the target site does not misreport it.
 + Results are filterable by status, and each entry has a one-click **Recheck**.
-
-This first version is read-only: it reports what it finds but does not delete
-anything. Deleting broken entries (individually or in bulk, to Trash so nothing is
-lost permanently) is a planned follow-up.
++ A small colored dot (green/yellow/red) appears on each site's icon on the front
+  end, showing its most recent status at a glance. Hover it to see why. It only
+  appears once a link has been checked at least once.
++ Broken and unreachable entries can be moved to **Trash** — one at a time from the
+  row, or in bulk by selecting several (or using "select all") and clicking
+  **Move selected to Trash**. This always uses WordPress's Trash, never a permanent
+  delete, so anything removed by mistake can still be restored from Sites > Trash.
 
 ### Admin screenshots
 <br/>
