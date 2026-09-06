@@ -3,8 +3,12 @@
  * Link Health Check.
  *
  * Checks the URL stored in the _sites_link meta of every "sites" entry and
- * records whether it is reachable. Results are shown under Sites > Link Health,
- * where broken entries can be moved to Trash individually or in bulk.
+ * records whether it is reachable, using concurrent requests (curl_multi) so
+ * large libraries do not take forever. Also flags entries that share the
+ * same URL as a duplicate of an earlier entry, a plain DB comparison with no
+ * network cost. Results are shown under Sites > Link Health, where broken,
+ * unverified or duplicate entries can be moved to Trash individually or in
+ * bulk.
  *
  * Scheduled runs only ever update the report. Trashing is always a deliberate,
  * user-initiated action (a button click), and always moves to Trash rather
@@ -70,9 +74,10 @@ class IO_Link_Health {
 
 	public static function settings() {
 		$defaults = array(
-			'frequency' => 'manual', // manual | daily | weekly | monthly
-			'timeout'   => 8,        // seconds per request
-			'strikes'   => 2,        // consecutive failures before "broken"
+			'frequency'   => 'manual', // manual | daily | weekly | monthly
+			'timeout'     => 8,        // seconds per request
+			'strikes'     => 2,        // consecutive failures before "broken"
+			'concurrency' => 3,        // requests in flight at once (1 = fully serial)
 		);
 		$saved = get_option( self::OPT_SETTINGS, array() );
 		return wp_parse_args( is_array( $saved ) ? $saved : array(), $defaults );
@@ -86,7 +91,7 @@ class IO_Link_Health {
 			'started'   => 0,
 			'finished'  => 0,
 			'running'   => false,
-			'counts'    => array( 'ok' => 0, 'broken' => 0, 'unverified' => 0 ),
+			'counts'    => array( 'ok' => 0, 'broken' => 0, 'unverified' => 0, 'duplicate' => 0 ),
 		);
 		$saved = get_option( self::OPT_STATE, array() );
 		return wp_parse_args( is_array( $saved ) ? $saved : array(), $defaults );
@@ -106,15 +111,17 @@ class IO_Link_Health {
 		}
 		check_admin_referer( 'io_hc_settings' );
 
-		$allowed   = array( 'manual', 'daily', 'weekly', 'monthly' );
-		$frequency = isset( $_POST['io_hc_frequency'] ) ? sanitize_text_field( wp_unslash( $_POST['io_hc_frequency'] ) ) : 'manual';
-		$timeout   = isset( $_POST['io_hc_timeout'] ) ? absint( $_POST['io_hc_timeout'] ) : 8;
-		$strikes   = isset( $_POST['io_hc_strikes'] ) ? absint( $_POST['io_hc_strikes'] ) : 2;
+		$allowed     = array( 'manual', 'daily', 'weekly', 'monthly' );
+		$frequency   = isset( $_POST['io_hc_frequency'] ) ? sanitize_text_field( wp_unslash( $_POST['io_hc_frequency'] ) ) : 'manual';
+		$timeout     = isset( $_POST['io_hc_timeout'] ) ? absint( $_POST['io_hc_timeout'] ) : 8;
+		$strikes     = isset( $_POST['io_hc_strikes'] ) ? absint( $_POST['io_hc_strikes'] ) : 2;
+		$concurrency = isset( $_POST['io_hc_concurrency'] ) ? absint( $_POST['io_hc_concurrency'] ) : 3;
 
 		update_option( self::OPT_SETTINGS, array(
-			'frequency' => in_array( $frequency, $allowed, true ) ? $frequency : 'manual',
-			'timeout'   => max( 3, min( 30, $timeout ) ),
-			'strikes'   => max( 1, min( 5, $strikes ) ),
+			'frequency'   => in_array( $frequency, $allowed, true ) ? $frequency : 'manual',
+			'timeout'     => max( 3, min( 30, $timeout ) ),
+			'strikes'     => max( 1, min( 5, $strikes ) ),
+			'concurrency' => max( 1, min( 5, $concurrency ) ),
 		), false );
 
 		self::reschedule();
@@ -184,8 +191,18 @@ class IO_Link_Health {
 	 * Scanning
 	 * ------------------------------------------------------------------ */
 
-	/** Every sites entry that actually has a URL stored. */
+	/**
+	 * Every sites entry that has a URL stored AND is not a duplicate.
+	 *
+	 * Duplicate detection is a fast, network-free DB pass, so it runs here as
+	 * part of building the scan queue rather than needing its own button:
+	 * every "Check all links now" run refreshes duplicate status too, and
+	 * duplicates are excluded from the network-check queue since pinging a
+	 * URL you are about to flag as redundant is wasted work.
+	 */
 	public static function collect_link_ids() {
+		$duplicate_ids = self::find_duplicates();
+
 		$q = new WP_Query( array(
 			'post_type'      => self::POST_TYPE,
 			'post_status'    => array( 'publish', 'draft', 'pending', 'private', 'future' ),
@@ -201,7 +218,8 @@ class IO_Link_Health {
 				),
 			),
 		) );
-		return array_map( 'intval', $q->posts );
+		$ids = array_map( 'intval', $q->posts );
+		return array_values( array_diff( $ids, $duplicate_ids ) );
 	}
 
 	/** Reset state and load the queue. */
@@ -214,14 +232,120 @@ class IO_Link_Health {
 			'started'   => time(),
 			'finished'  => 0,
 			'running'   => true,
-			'counts'    => array( 'ok' => 0, 'broken' => 0, 'unverified' => 0 ),
+			'counts'    => array( 'ok' => 0, 'broken' => 0, 'unverified' => 0, 'duplicate' => 0 ),
 		);
 		self::set_state( $state );
 		return $state;
 	}
 
 	/**
+	 * Normalize a URL for duplicate comparison: lowercase scheme and host,
+	 * drop the fragment, and ignore a single trailing slash on the path.
+	 * Path and query are left as-is (case-sensitive on some servers), so this
+	 * only catches genuinely identical addresses, not merely similar ones.
+	 */
+	public static function normalize_url( $url ) {
+		$url = trim( (string) $url );
+		if ( '' === $url ) {
+			return '';
+		}
+		$parts = wp_parse_url( $url );
+		if ( empty( $parts['host'] ) ) {
+			return strtolower( $url );
+		}
+		$scheme = isset( $parts['scheme'] ) ? strtolower( $parts['scheme'] ) : 'http';
+		$host   = strtolower( $parts['host'] );
+		$port   = isset( $parts['port'] ) ? ':' . $parts['port'] : '';
+		$path   = isset( $parts['path'] ) ? rtrim( $parts['path'], '/' ) : '';
+		$query  = isset( $parts['query'] ) ? '?' . $parts['query'] : '';
+		return $scheme . '://' . $host . $port . $path . $query;
+	}
+
+	/**
+	 * Find Sites entries that share the same URL. Among each group, the
+	 * oldest post (lowest ID) is kept clean; the rest are flagged 'duplicate'.
+	 * Stale flags are cleared first, so a post whose sibling was since edited
+	 * or trashed goes back into the normal reachability queue instead of
+	 * staying stuck.
+	 *
+	 * @return int[] post IDs flagged as duplicate in this pass
+	 */
+	private static function find_duplicates() {
+		global $wpdb;
+
+		$rows = $wpdb->get_results(
+			$wpdb->prepare(
+				"SELECT p.ID, pm.meta_value AS url
+				FROM {$wpdb->posts} p
+				INNER JOIN {$wpdb->postmeta} pm ON pm.post_id = p.ID AND pm.meta_key = %s
+				WHERE p.post_type = %s AND p.post_status IN ('publish','draft','pending','private','future')",
+				self::LINK_META,
+				self::POST_TYPE
+			)
+		);
+
+		$groups = array();
+		foreach ( (array) $rows as $row ) {
+			$key = self::normalize_url( $row->url );
+			if ( '' === $key ) {
+				continue;
+			}
+			$groups[ $key ][] = (int) $row->ID;
+		}
+
+		$duplicate_of = array(); // dupe post ID => keeper post ID
+		foreach ( $groups as $ids ) {
+			if ( count( $ids ) < 2 ) {
+				continue;
+			}
+			sort( $ids );
+			$keeper = array_shift( $ids );
+			foreach ( $ids as $dupe_id ) {
+				$duplicate_of[ $dupe_id ] = $keeper;
+			}
+		}
+
+		$previously_flagged = get_posts( array(
+			'post_type'      => self::POST_TYPE,
+			'post_status'    => array( 'publish', 'draft', 'pending', 'private', 'future' ),
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+			'meta_query'     => array( array( 'key' => self::META_STATUS, 'value' => 'duplicate' ) ),
+		) );
+		foreach ( $previously_flagged as $pid ) {
+			if ( ! isset( $duplicate_of[ $pid ] ) ) {
+				delete_post_meta( $pid, self::META_STATUS );
+				delete_post_meta( $pid, self::META_DETAIL );
+			}
+		}
+
+		foreach ( $duplicate_of as $dupe_id => $keeper_id ) {
+			update_post_meta( $dupe_id, self::META_STATUS, 'duplicate' );
+			update_post_meta( $dupe_id, self::META_DETAIL, array(
+				'message' => sprintf(
+					/* translators: %s: title of the entry this one duplicates */
+					__( 'Same address as "%s"', 'i_theme' ),
+					get_the_title( $keeper_id )
+				),
+				'checked' => time(),
+				'fails'   => 0,
+			) );
+		}
+
+		return array_keys( $duplicate_of );
+	}
+
+	/**
 	 * Check links until the time budget is spent or the queue empties.
+	 *
+	 * Pulls up to `concurrency` links at a time and checks that wave together
+	 * (see check_urls_batch()). A wave's worst case is bounded by the
+	 * timeout for the concurrent HEAD phase, PLUS up to `concurrency` more
+	 * timeouts if every item in that wave needs the serial GET-retry
+	 * fallback -- rare, but it means a single wave can legitimately overshoot
+	 * this budget by more than earlier single-item batches did. That is an
+	 * accepted trade for real throughput at scale; nothing times out because
+	 * of it, a wave just finishes late.
 	 */
 	public static function process_batch( $budget = self::BATCH_BUDGET ) {
 		$state = self::state();
@@ -230,8 +354,9 @@ class IO_Link_Health {
 			return self::finish( $state );
 		}
 
-		$settings = self::settings();
-		$start    = microtime( true );
+		$settings    = self::settings();
+		$start       = microtime( true );
+		$concurrency = max( 1, min( 5, (int) $settings['concurrency'] ) );
 
 		// Best effort; many hosts disallow this and that is fine, the time box
 		// is what actually keeps us inside the limit.
@@ -240,17 +365,29 @@ class IO_Link_Health {
 		}
 
 		while ( ! empty( $state['queue'] ) && ( microtime( true ) - $start ) < $budget ) {
-			$post_id = (int) array_shift( $state['queue'] );
-			$url     = get_post_meta( $post_id, self::LINK_META, true );
+			$wave_ids = array_splice( $state['queue'], 0, $concurrency );
 
-			$result = self::check_url( $url, $settings['timeout'] );
-			$status = self::record( $post_id, $result, $settings['strikes'] );
-
-			if ( ! isset( $state['counts'][ $status ] ) ) {
-				$state['counts'][ $status ] = 0;
+			$urls_by_id = array();
+			foreach ( $wave_ids as $post_id ) {
+				$urls_by_id[ (int) $post_id ] = get_post_meta( $post_id, self::LINK_META, true );
 			}
-			$state['counts'][ $status ]++;
-			$state['processed']++;
+
+			$results = self::check_urls_batch( $urls_by_id, $settings['timeout'], $concurrency );
+
+			foreach ( $wave_ids as $post_id ) {
+				$post_id = (int) $post_id;
+				$result  = isset( $results[ $post_id ] )
+					? $results[ $post_id ]
+					: array( 'status' => 'broken', 'code' => 0, 'message' => __( 'Check did not complete.', 'i_theme' ) );
+
+				$status = self::record( $post_id, $result, $settings['strikes'] );
+
+				if ( ! isset( $state['counts'][ $status ] ) ) {
+					$state['counts'][ $status ] = 0;
+				}
+				$state['counts'][ $status ]++;
+				$state['processed']++;
+			}
 		}
 
 		if ( empty( $state['queue'] ) ) {
@@ -274,6 +411,9 @@ class IO_Link_Health {
 	 *
 	 * Uses HEAD first so no page body is transferred. Servers that reject HEAD
 	 * get one retry with a GET capped at 2KB, so we never pull a whole page.
+	 * This is the single-URL serial path: used for a manual Recheck, and as
+	 * the fallback for check_urls_batch() when concurrency is unavailable or
+	 * disabled, and for individual retries within a concurrent batch.
 	 *
 	 * @return array status (ok|broken|unverified), code, message
 	 */
@@ -291,7 +431,7 @@ class IO_Link_Health {
 			'timeout'     => $timeout,
 			'redirection' => 5,
 			'sslverify'   => true,
-			'user-agent'  => 'Mozilla/5.0 (compatible; WebStackLinkHealth/1.0; +' . home_url( '/' ) . ')',
+			'user-agent'  => self::user_agent(),
 			'headers'     => array( 'Accept' => '*/*' ),
 		);
 
@@ -311,12 +451,29 @@ class IO_Link_Health {
 		}
 
 		if ( is_wp_error( $res ) ) {
-			$message = $res->get_error_message();
+			return self::classify_response( 0, $res->get_error_message() );
+		}
+
+		return self::classify_response( $code, null );
+	}
+
+	private static function user_agent() {
+		return 'Mozilla/5.0 (compatible; WebStackLinkHealth/1.0; +' . home_url( '/' ) . ')';
+	}
+
+	/**
+	 * Turn a resolved HTTP code (or a network error) into the 3-way verdict.
+	 * Shared between the serial (check_url) and concurrent (check_urls_batch)
+	 * paths so the judgment calls about which codes mean what live in one
+	 * place rather than risking the two paths quietly disagreeing.
+	 */
+	private static function classify_response( $code, $error_message ) {
+		if ( null !== $error_message ) {
 			// A timeout or a TLS problem is not proof the site is gone.
-			if ( preg_match( '#timed out|timeout|SSL|certificate|handshake#i', $message ) ) {
-				return array( 'status' => 'unverified', 'code' => 0, 'message' => $message );
+			if ( preg_match( '#timed out|timeout|SSL|certificate|handshake#i', $error_message ) ) {
+				return array( 'status' => 'unverified', 'code' => 0, 'message' => $error_message );
 			}
-			return array( 'status' => 'broken', 'code' => 0, 'message' => $message );
+			return array( 'status' => 'broken', 'code' => 0, 'message' => $error_message );
 		}
 
 		if ( $code >= 200 && $code < 400 ) {
@@ -337,6 +494,164 @@ class IO_Link_Health {
 			'code'    => $code,
 			'message' => sprintf( __( 'Server responded %d', 'i_theme' ), $code ),
 		);
+	}
+
+	/**
+	 * Check a batch of URLs, using true concurrency when available.
+	 *
+	 * The HEAD phase runs concurrently via curl_multi for real throughput at
+	 * scale (a 1,000-link library checked one at a time is a very long wait).
+	 * Anything that phase cannot resolve cleanly -- a network error, or a
+	 * code that means "retry as GET" (0/405/501) -- is handed to the existing
+	 * serial check_url() for just that one URL, which already knows how to
+	 * retry with a size-capped GET and apply the full classification rules.
+	 * That keeps the retry logic in exactly one place instead of duplicating
+	 * it for a concurrent context. The trade-off: a URL needing that retry
+	 * pays for one extra HEAD round trip (the concurrent attempt, discarded)
+	 * before check_url() tries again from scratch. In practice this only
+	 * affects the minority of servers that reject HEAD outright, so the
+	 * simplicity was judged worth it over a more complex "resume from GET".
+	 *
+	 * Falls back to fully serial check_url() calls when the curl extension is
+	 * unavailable, or when concurrency is set to 1.
+	 *
+	 * @param array $urls_by_id [ post_id => url, ... ]
+	 * @return array [ post_id => ['status'=>, 'code'=>, 'message'=>], ... ]
+	 */
+	public static function check_urls_batch( array $urls_by_id, $timeout, $concurrency ) {
+		$results  = array();
+		$to_check = array();
+
+		foreach ( $urls_by_id as $post_id => $url ) {
+			$post_id = (int) $post_id;
+			$url     = trim( (string) $url );
+			if ( '' === $url ) {
+				$results[ $post_id ] = array( 'status' => 'broken', 'code' => 0, 'message' => __( 'No URL is set for this entry', 'i_theme' ) );
+				continue;
+			}
+			if ( ! preg_match( '#^https?://#i', $url ) ) {
+				$results[ $post_id ] = array( 'status' => 'broken', 'code' => 0, 'message' => __( 'Not a valid http(s) URL', 'i_theme' ) );
+				continue;
+			}
+			$to_check[ $post_id ] = $url;
+		}
+
+		if ( empty( $to_check ) ) {
+			return $results;
+		}
+
+		if ( $concurrency <= 1 || ! function_exists( 'curl_multi_init' ) ) {
+			foreach ( $to_check as $post_id => $url ) {
+				$results[ $post_id ] = self::check_url( $url, $timeout );
+			}
+			return $results;
+		}
+
+		$head_results = self::concurrent_head( $to_check, $timeout, $concurrency, self::user_agent() );
+
+		foreach ( $to_check as $post_id => $url ) {
+			$head = isset( $head_results[ $post_id ] ) ? $head_results[ $post_id ] : array( 'code' => null, 'error' => 'no result' );
+
+			$needs_retry = ( null === $head['code'] ) || in_array( $head['code'], array( 0, 405, 501 ), true );
+			if ( $needs_retry ) {
+				$results[ $post_id ] = self::check_url( $url, $timeout );
+				continue;
+			}
+
+			$results[ $post_id ] = self::classify_response( $head['code'], null );
+		}
+
+		return $results;
+	}
+
+	/**
+	 * Fire HEAD requests for a set of URLs concurrently via curl_multi,
+	 * keeping up to $concurrency requests in flight at once (a rolling
+	 * window: as each one finishes, the next queued URL takes its slot).
+	 *
+	 * @param array $urls_by_id [ post_id => url, ... ]
+	 * @return array [ post_id => ['code' => int|null, 'error' => string|null], ... ]
+	 */
+	private static function concurrent_head( array $urls_by_id, $timeout, $concurrency, $user_agent ) {
+		$results = array();
+		if ( empty( $urls_by_id ) ) {
+			return $results;
+		}
+
+		$queue = $urls_by_id;
+		$mh    = curl_multi_init();
+		$slots = array(); // spl_object_id($ch) => post_id
+
+		/*
+		 * array_shift() would renumber any remaining INTEGER keys (post IDs
+		 * are integers), silently relabeling later queue entries. Dequeue
+		 * with foreach+unset instead, which never touches other keys.
+		 */
+		$dequeue = function ( &$q ) {
+			foreach ( $q as $id => $url ) {
+				unset( $q[ $id ] );
+				return array( $id, $url );
+			}
+			return null;
+		};
+
+		$make_handle = function ( $url ) use ( $timeout, $user_agent ) {
+			$ch = curl_init( $url );
+			curl_setopt_array( $ch, array(
+				CURLOPT_NOBODY         => true,
+				CURLOPT_CUSTOMREQUEST  => 'HEAD',
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HEADER         => false,
+				CURLOPT_FOLLOWLOCATION => true,
+				CURLOPT_MAXREDIRS      => 5,
+				CURLOPT_TIMEOUT        => $timeout,
+				CURLOPT_CONNECTTIMEOUT => $timeout,
+				CURLOPT_SSL_VERIFYPEER => true,
+				CURLOPT_SSL_VERIFYHOST => 2,
+				CURLOPT_USERAGENT      => $user_agent,
+			) );
+			return $ch;
+		};
+
+		while ( count( $slots ) < $concurrency && ! empty( $queue ) ) {
+			list( $post_id, $url ) = $dequeue( $queue );
+			$ch = $make_handle( $url );
+			curl_multi_add_handle( $mh, $ch );
+			$slots[ spl_object_id( $ch ) ] = $post_id;
+		}
+
+		$active = null;
+		do {
+			$status = curl_multi_exec( $mh, $active );
+			if ( $active ) {
+				curl_multi_select( $mh, 1.0 );
+			}
+
+			while ( $info = curl_multi_info_read( $mh ) ) {
+				$ch      = $info['handle'];
+				$post_id = $slots[ spl_object_id( $ch ) ];
+				unset( $slots[ spl_object_id( $ch ) ] );
+
+				if ( CURLE_OK === $info['result'] ) {
+					$results[ $post_id ] = array( 'code' => (int) curl_getinfo( $ch, CURLINFO_HTTP_CODE ), 'error' => null );
+				} else {
+					$results[ $post_id ] = array( 'code' => null, 'error' => curl_error( $ch ) ?: curl_strerror( $info['result'] ) );
+				}
+				curl_multi_remove_handle( $mh, $ch );
+				curl_close( $ch );
+
+				if ( ! empty( $queue ) ) {
+					list( $next_id, $next_url ) = $dequeue( $queue );
+					$new_ch = $make_handle( $next_url );
+					curl_multi_add_handle( $mh, $new_ch );
+					$slots[ spl_object_id( $new_ch ) ] = $next_id;
+					$active = 1; // more work queued; keep the loop going
+				}
+			}
+		} while ( $active && CURLM_OK === $status );
+
+		curl_multi_close( $mh );
+		return $results;
 	}
 
 	/**
@@ -642,6 +957,8 @@ JS;
 				return __( 'Broken', 'i_theme' );
 			case 'unverified':
 				return __( 'Could not verify', 'i_theme' );
+			case 'duplicate':
+				return __( 'Duplicate', 'i_theme' );
 		}
 		return __( 'Not checked', 'i_theme' );
 	}
@@ -654,13 +971,14 @@ JS;
 		$settings = self::settings();
 		$state    = self::state();
 		$filter   = isset( $_GET['status'] ) ? sanitize_key( wp_unslash( $_GET['status'] ) ) : 'broken';
-		if ( ! in_array( $filter, array( 'broken', 'unverified', 'ok', 'all' ), true ) ) {
+		if ( ! in_array( $filter, array( 'broken', 'unverified', 'duplicate', 'ok', 'all' ), true ) ) {
 			$filter = 'broken';
 		}
 
 		$counts = array(
 			'broken'     => self::count_by_status( 'broken' ),
 			'unverified' => self::count_by_status( 'unverified' ),
+			'duplicate'  => self::count_by_status( 'duplicate' ),
 			'ok'         => self::count_by_status( 'ok' ),
 		);
 		$next = wp_next_scheduled( self::CRON_SCAN );
@@ -677,6 +995,7 @@ JS;
 				.io-hc-ok{background:#e6f4ea;color:#137333}
 				.io-hc-broken{background:#fce8e6;color:#c5221f}
 				.io-hc-unverified{background:#fef7e0;color:#b06000}
+				.io-hc-duplicate{background:#e8f0fe;color:#1967d2}
 				.io-hc-cards{display:flex;gap:12px;margin:16px 0;flex-wrap:wrap}
 				.io-hc-card{background:#fff;border:1px solid #dcdcde;border-radius:4px;padding:12px 18px;min-width:120px}
 				.io-hc-card .n{font-size:22px;font-weight:600;display:block}
@@ -688,6 +1007,7 @@ JS;
 			<div class="io-hc-cards">
 				<div class="io-hc-card"><span class="n"><?php echo esc_html( $counts['broken'] ); ?></span><?php esc_html_e( 'Broken', 'i_theme' ); ?></div>
 				<div class="io-hc-card"><span class="n"><?php echo esc_html( $counts['unverified'] ); ?></span><?php esc_html_e( 'Could not verify', 'i_theme' ); ?></div>
+				<div class="io-hc-card"><span class="n"><?php echo esc_html( $counts['duplicate'] ); ?></span><?php esc_html_e( 'Duplicate', 'i_theme' ); ?></div>
 				<div class="io-hc-card"><span class="n"><?php echo esc_html( $counts['ok'] ); ?></span><?php esc_html_e( 'OK', 'i_theme' ); ?></div>
 			</div>
 
@@ -762,6 +1082,13 @@ JS;
 							<p class="description"><?php esc_html_e( 'A link must fail this many checks in a row before it is reported as broken. Keeping this at 2 avoids condemning a site over a momentary outage.', 'i_theme' ); ?></p>
 						</td>
 					</tr>
+					<tr>
+						<th scope="row"><label for="io_hc_concurrency"><?php esc_html_e( 'Concurrent requests', 'i_theme' ); ?></label></th>
+						<td>
+							<input type="number" name="io_hc_concurrency" id="io_hc_concurrency" min="1" max="5" value="<?php echo esc_attr( $settings['concurrency'] ); ?>" class="small-text">
+							<p class="description"><?php esc_html_e( 'How many links to check at once. Higher is faster on a large library but puts more load on your server and the sites being checked; 1 checks fully one at a time.', 'i_theme' ); ?></p>
+						</td>
+					</tr>
 				</table>
 				<p class="submit"><button type="submit" name="io_hc_save" value="1" class="button"><?php esc_html_e( 'Save settings', 'i_theme' ); ?></button></p>
 			</form>
@@ -772,6 +1099,7 @@ JS;
 				$tabs = array(
 					'broken'     => __( 'Broken', 'i_theme' ),
 					'unverified' => __( 'Could not verify', 'i_theme' ),
+					'duplicate'  => __( 'Duplicate', 'i_theme' ),
 					'ok'         => __( 'OK', 'i_theme' ),
 					'all'        => __( 'All checked', 'i_theme' ),
 				);
@@ -820,7 +1148,7 @@ JS;
 		// Trashing is only offered on tabs that actually list candidates for it;
 		// "OK" links are shown for completeness but are not something you would
 		// normally bulk trash from this screen.
-		$show_bulk = in_array( $filter, array( 'broken', 'unverified', 'all' ), true );
+		$show_bulk = in_array( $filter, array( 'broken', 'unverified', 'duplicate', 'all' ), true );
 		?>
 		<?php if ( $show_bulk ) : ?>
 		<p>

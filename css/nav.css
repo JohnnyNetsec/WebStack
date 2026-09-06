@@ -351,4 +351,5 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
 .io-hc-dot-ok{background:#2ecc71}
 .io-hc-dot-broken{background:#e74c3c}
 .io-hc-dot-unverified{background:#f1c40f}
+.io-hc-dot-duplicate{background:#3b82f6}
 .black .io-hc-dot{border-color:#2c2e2f}

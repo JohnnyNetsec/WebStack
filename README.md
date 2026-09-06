@@ -67,9 +67,10 @@ RewriteRule . /index.php [L]
 Under **Sites -> Link Health** in the admin, the theme can check whether the URL on
 every "Sites" entry is still reachable.
 
-+ **Check all links now** runs a check on demand. With a small number of entries this
-  finishes in seconds; larger libraries are checked in short batches so the request
-  never times out.
++ **Check all links now** runs a check on demand. Links are checked several at a
+  time (configurable, default 3) rather than strictly one by one, so a large
+  library finishes noticeably faster; either way, larger libraries are checked in
+  short batches so the request never times out.
 + **Automatic checks** can run Daily, Weekly or Monthly via WP-Cron, or stay Manual
   only. Scheduled runs only ever update the report — they never delete or modify
   anything on their own.
@@ -80,16 +81,21 @@ every "Sites" entry is still reachable.
     returned 401/403/405/429. These responses usually mean the site is blocking
     automated requests (Cloudflare and similar are common causes), not that it is
     down, so they are kept separate from Broken rather than counted as dead links.
+  - **Duplicate** — another Sites entry already points at the same address. The
+    oldest entry is left alone; newer ones pointing at the same place are flagged
+    here instead. This check is instant (no network request), so it always runs as
+    part of a scan and does not slow anything down.
   - A link only becomes Broken after failing two checks in a row (configurable), so
     a brief outage on the target site does not misreport it.
 + Results are filterable by status, and each entry has a one-click **Recheck**.
-+ A small colored dot (green/yellow/red) appears on each site's icon on the front
-  end, showing its most recent status at a glance. Hover it to see why. It only
-  appears once a link has been checked at least once.
-+ Broken and unreachable entries can be moved to **Trash** — one at a time from the
-  row, or in bulk by selecting several (or using "select all") and clicking
-  **Move selected to Trash**. This always uses WordPress's Trash, never a permanent
-  delete, so anything removed by mistake can still be restored from Sites > Trash.
++ A small colored dot (green/yellow/red/blue) appears on each site's icon on the
+  front end, showing its most recent status at a glance. Hover it to see why. It
+  only appears once a link has been checked at least once.
++ Broken, unreachable and duplicate entries can be moved to **Trash** — one at a
+  time from the row, or in bulk by selecting several (or using "select all") and
+  clicking **Move selected to Trash**. This always uses WordPress's Trash, never a
+  permanent delete, so anything removed by mistake can still be restored from
+  Sites > Trash.
 
 ### Admin screenshots
 <br/>
