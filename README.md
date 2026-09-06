@@ -51,6 +51,9 @@ RewriteRule . /index.php [L]
 ### Using the theme
 + Add your entries under the "Sites" post type in the WordPress admin
 + Categories go two levels deep at most, and parent categories should not hold entries of their own
+  -- the editor enforces this: exactly one category is required before a Site can be published, only
+  one category can ever be selected, and a category that has subcategories is shown only as a group
+  heading (it cannot be assigned directly, since its subcategories are the ones you actually pick)
 + Site images are optional — the theme falls back to fetching the target site's favicon automatically
 + The icon shown in front of a navigation menu title comes from the category image description (see the screenshot below); icon styles follow Font Awesome
 ![Thumbnail_index](https://owen0o0.github.io/ioStaticResources/webstack/02.png)

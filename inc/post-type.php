@@ -82,6 +82,154 @@ function create_sites_taxonomies() {
 	register_taxonomy( 'favorites', array( 'sites' ), $args );
 }
 
+/*
+ * Site Category selection: required, single-select, leaf categories only.
+ *
+ * The default taxonomy meta box lets you check any number of categories,
+ * including a parent that already has subcategories under it -- but the
+ * theme's own convention (see README) is a 2-level hierarchy where parent
+ * categories should not hold entries of their own. This replaces that meta
+ * box with a single <select>: any category that has children is rendered
+ * as an <optgroup> label (a group heading, not a selectable option) with
+ * its children listed under it, so a parent-with-children simply cannot be
+ * chosen, and native <select> semantics rule out choosing more than one.
+ *
+ * Enforcement also happens server-side in io_save_site_category(), since
+ * the dropdown only prevents the common case -- a tampered or programmatic
+ * POST could still submit something invalid.
+ */
+add_action( 'add_meta_boxes', 'io_replace_site_category_metabox' );
+function io_replace_site_category_metabox() {
+	remove_meta_box( 'favoritesdiv', 'sites', 'side' );
+	add_meta_box(
+		'io_site_category',
+		__( 'Site Category', 'i_theme' ),
+		'io_render_site_category_metabox',
+		'sites',
+		'side',
+		'high'
+	);
+}
+
+function io_render_site_category_metabox( $post ) {
+	wp_nonce_field( 'io_site_category_save', 'io_site_category_nonce' );
+
+	$current_terms = wp_get_object_terms( $post->ID, 'favorites', array( 'fields' => 'ids' ) );
+	$current       = ( ! is_wp_error( $current_terms ) && ! empty( $current_terms ) ) ? (int) $current_terms[0] : 0;
+
+	$all_terms = get_terms( array( 'taxonomy' => 'favorites', 'hide_empty' => false ) );
+	if ( is_wp_error( $all_terms ) ) {
+		$all_terms = array();
+	}
+
+	$by_parent = array();
+	foreach ( $all_terms as $term ) {
+		$by_parent[ (int) $term->parent ][] = $term;
+	}
+
+	echo '<select name="io_site_category" id="io_site_category" style="width:100%">';
+	echo '<option value="0">' . esc_html__( '&mdash; Select a category &mdash;', 'i_theme' ) . '</option>';
+
+	$top_terms = isset( $by_parent[0] ) ? $by_parent[0] : array();
+	foreach ( $top_terms as $top ) {
+		if ( ! empty( $by_parent[ $top->term_id ] ) ) {
+			echo '<optgroup label="' . esc_attr( $top->name ) . '">';
+			foreach ( $by_parent[ $top->term_id ] as $child ) {
+				printf(
+					'<option value="%d"%s>%s</option>',
+					(int) $child->term_id,
+					selected( $current, $child->term_id, false ),
+					esc_html( $child->name )
+				);
+			}
+			echo '</optgroup>';
+		} else {
+			printf(
+				'<option value="%d"%s>%s</option>',
+				(int) $top->term_id,
+				selected( $current, $top->term_id, false ),
+				esc_html( $top->name )
+			);
+		}
+	}
+	echo '</select>';
+	echo '<p class="description">' . esc_html__( 'Required. A category that has subcategories is shown only as a group heading above them and cannot be selected directly -- choose one of its subcategories instead.', 'i_theme' ) . '</p>';
+}
+
+add_action( 'save_post', 'io_save_site_category' );
+function io_save_site_category( $post_id ) {
+	if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
+		return;
+	}
+	if ( wp_is_post_revision( $post_id ) ) {
+		return;
+	}
+	if ( 'sites' !== get_post_type( $post_id ) ) {
+		return;
+	}
+	if ( ! isset( $_POST['io_site_category_nonce'] ) || ! wp_verify_nonce( $_POST['io_site_category_nonce'], 'io_site_category_save' ) ) {
+		return;
+	}
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		return;
+	}
+
+	$submitted = isset( $_POST['io_site_category'] ) ? absint( $_POST['io_site_category'] ) : 0;
+	$valid     = false;
+
+	if ( $submitted > 0 ) {
+		$term = get_term( $submitted, 'favorites' );
+		if ( $term && ! is_wp_error( $term ) ) {
+			$children = get_terms( array(
+				'taxonomy'   => 'favorites',
+				'parent'     => $submitted,
+				'hide_empty' => false,
+				'fields'     => 'ids',
+			) );
+			// A term with no children is a valid leaf, whether it sits at
+			// the top level or is itself already a child.
+			if ( is_wp_error( $children ) || empty( $children ) ) {
+				$valid = true;
+			}
+		}
+	}
+
+	if ( $valid ) {
+		wp_set_object_terms( $post_id, array( $submitted ), 'favorites', false );
+		return;
+	}
+
+	// Invalid or missing: leave any existing category assignment alone, and
+	// only block the post from staying live.
+	$post = get_post( $post_id );
+	if ( $post && 'publish' === $post->post_status ) {
+		remove_action( 'save_post', 'io_save_site_category' );
+		wp_update_post( array( 'ID' => $post_id, 'post_status' => 'draft' ) );
+		add_action( 'save_post', 'io_save_site_category' );
+		set_transient( 'io_site_cat_invalid_' . $post_id, 1, 60 );
+	}
+}
+
+add_filter( 'redirect_post_location', 'io_site_category_redirect_notice', 10, 2 );
+function io_site_category_redirect_notice( $location, $post_id ) {
+	if ( 'sites' === get_post_type( $post_id ) && get_transient( 'io_site_cat_invalid_' . $post_id ) ) {
+		delete_transient( 'io_site_cat_invalid_' . $post_id );
+		$location = add_query_arg( 'io_site_cat_error', '1', $location );
+	}
+	return $location;
+}
+
+add_action( 'admin_notices', 'io_site_category_admin_notice' );
+function io_site_category_admin_notice() {
+	$screen = get_current_screen();
+	if ( ! $screen || 'sites' !== $screen->post_type ) {
+		return;
+	}
+	if ( isset( $_GET['io_site_cat_error'] ) && '1' === $_GET['io_site_cat_error'] ) {
+		echo '<div class="notice notice-error"><p>' . esc_html__( 'This site was kept as a Draft because a Site Category was not selected (or the selected category was a parent with subcategories, which cannot be assigned directly). Please select exactly one category, then publish again.', 'i_theme' ) . '</p></div>';
+	}
+}
+
 
 // Bulletins
 add_action( 'init', 'post_type_bulletin' );
