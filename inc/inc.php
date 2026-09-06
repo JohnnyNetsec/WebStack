@@ -222,11 +222,42 @@ function wpdx_custom_admin_title($admin_title, $title){
  * Disable the REST API and remove the wp-json link
  */
 if( io_get_option('ioc_api') ) :
-    add_filter('rest_enabled', '_return_false');
-    add_filter('rest_jsonp_enabled', '_return_false');
+    /*
+     * These two were '_return_false' -- a single underscore. WordPress's helper is
+     * '__return_false' with two, so the callback did not exist. rest_jsonp_enabled
+     * is applied on every REST request inside WP_REST_Server::serve_request(), so
+     * the missing function raised "Call to undefined function _return_false()" and
+     * killed every REST call. That is what made the block editor report
+     * "Publishing failed" for bulletins, the only post type registered with
+     * show_in_rest. Deleting still worked because the posts-list Trash action goes
+     * through post.php rather than the REST API.
+     *
+     * 'rest_enabled' was also dropped from core in WP 4.7 and this theme requires
+     * WP 6.0+, so filtering it did nothing; it has been removed.
+     */
+    add_filter( 'rest_jsonp_enabled', '__return_false' );
+    // Turn away anonymous REST callers, which is what this option is for, while
+    // leaving REST intact for logged-in users -- the block editor needs it to save.
+    add_filter( 'rest_authentication_errors', 'io_restrict_rest_to_logged_in' );
     remove_action( 'wp_head', 'rest_output_link_wp_head', 10 );
     remove_action( 'wp_head', 'wp_oembed_add_discovery_links', 10 );
 endif;
+/**
+ * Restrict REST API access to logged-in users (see the ioc_api option above).
+ */
+function io_restrict_rest_to_logged_in( $result ) {
+    if ( ! empty( $result ) ) {
+        return $result;
+    }
+    if ( ! is_user_logged_in() ) {
+        return new WP_Error(
+            'rest_not_logged_in',
+            __( 'REST API access is restricted to logged-in users.', 'i_theme' ),
+            array( 'status' => 401 )
+        );
+    }
+    return $result;
+}
 
 /**
  * Disable emojis
