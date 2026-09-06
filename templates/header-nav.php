@@ -26,8 +26,11 @@ $categories = get_categories( array(
                 <header class="logo-env">
                     <!-- logo -->
                     <div class="logo">
-                        <a href="<?php bloginfo('url') ?>" class="logo-expanded">
+                        <a href="<?php bloginfo('url') ?>" class="logo-expanded logo-mode-dark">
                             <img src="<?php echo io_get_option('logo_normal') ?>" height="40" alt="<?php bloginfo('name') ?>" />
+                        </a>
+                        <a href="<?php bloginfo('url') ?>" class="logo-expanded logo-mode-light">
+                            <img src="<?php echo get_theme_file_uri( '/images/netsec-logo-dark.svg' ); ?>" height="40" alt="<?php bloginfo('name') ?>" />
                         </a>
                         <a href="<?php bloginfo('url') ?>" class="logo-collapsed">
                             <img src="<?php echo io_get_option('logo_small') ?>" height="40" alt="<?php bloginfo('name') ?>">

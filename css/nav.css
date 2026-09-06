@@ -42,10 +42,13 @@ a:hover,a:focus{color:#232323;text-decoration:none}
 .page-container{display:table;width:100%;height:100%;vertical-align:top;border-collapse:collapse;border-spacing:0;table-layout:fixed}
 .page-container .main-content:hover{z-index:15}
 .page .panel p,.page .comments-area p{font-size:15px;line-height:1.8}
-.sidebar-menu{display:table-cell;position:relative;width:250px;background:#232629;z-index:1}
-.sidebar-menu .logo-env{padding:19px 30px;border-bottom:1px solid #32363b}
+.sidebar-menu{display:table-cell;position:relative;width:250px;background:#fff;border-right:1px solid #e6eaf0;z-index:1}
+.sidebar-menu .logo-env{padding:19px 30px;border-bottom:1px solid #e6eaf0}
 .sidebar-menu .logo-env .logo{float:left}
 .sidebar-menu .logo-env .logo .logo-collapsed{display:none}
+.sidebar-menu .logo-env .logo .logo-mode-dark{display:none}
+.black .sidebar-menu .logo-env .logo .logo-mode-dark{display:inline-block}
+.black .sidebar-menu .logo-env .logo .logo-mode-light{display:none}
 .sidebar-menu .main-menu{padding:0 30px;margin-top:20px;margin-bottom:20px;list-style:none}
 .navbar.horizontal-menu .navbar-inner>.nav.navbar-mobile{display:none}
 .navbar .navbar-content{position:absolute;background:#fff;display:flex;width:100%;box-shadow:0 5px 20px rgba(0,0,0,.05);padding-bottom:1px;justify-content:space-between;align-items:center;}
@@ -54,13 +57,13 @@ a:hover,a:focus{color:#232323;text-decoration:none}
 footer.main-footer .go-up{width:45px;float:right;position:fixed;right:10px;bottom:30px;z-index:10;margin:0;padding:0;list-style:none}
 footer.main-footer .go-up a{display:inline-block;width:35px;height:35px;text-align:center;border-radius:50%;background:rgba(123,123,123,.50);color:#fff;font-size:20px;line-height:35px;padding:0}
 footer.main-footer .go-up a:hover{background-color:rgba(44,46,47,.1)}footer.main-footer.footer-type-2{background-color:#252729;border-top:0;color:#fff}
-.sidebar-menu .main-menu li.active>a{color:#fff;background:rgba(241,65,65,.14)}.sidebar-menu .main-menu li.has-sub>a:before{position:relative;display:inline-block;font-family:FontAwesome;content:'\f107';float:right;color:#6d747a;margin-left:10px;-webkit-transform:rotate(-90deg);-moz-transform:rotate(-90deg);-o-transform:rotate(-90deg);-ms-transform:rotate(-90deg);transform:rotate(-90deg);-webkit-transition:all 150ms ease-in-out;-moz-transition:all 150ms ease-in-out;-o-transition:all 150ms ease-in-out;transition:all 150ms ease-in-out}
+.sidebar-menu .main-menu li.active>a{color:#f14141;background:rgba(241,65,65,.14)}.sidebar-menu .main-menu li.has-sub>a:before{position:relative;display:inline-block;font-family:FontAwesome;content:'\f107';float:right;color:#6d747a;margin-left:10px;-webkit-transform:rotate(-90deg);-moz-transform:rotate(-90deg);-o-transform:rotate(-90deg);-ms-transform:rotate(-90deg);transform:rotate(-90deg);-webkit-transition:all 150ms ease-in-out;-moz-transition:all 150ms ease-in-out;-o-transition:all 150ms ease-in-out;transition:all 150ms ease-in-out}
 .sidebar-menu .main-menu li.has-sub.opened>a:before,.sidebar-menu .main-menu li.has-sub.expanded>a:before{-webkit-transform:rotate(0);-moz-transform:rotate(0);-o-transform:rotate(0);-ms-transform:rotate(0);transform:rotate(0)}
-.sidebar-menu .main-menu a{color:#9aa1a8;text-decoration:none;display:block;padding:13px 5px;border-bottom:1px solid #32363b}
+.sidebar-menu .main-menu a{color:#4b5563;text-decoration:none;display:block;padding:13px 5px;border-bottom:1px solid #eef1f5}
 .sidebar-menu .main-menu a>i{display:inline-block;margin-right:10px}
 .sidebar-menu .main-menu a>i+span{padding-right:10px}
 .sidebar-menu .main-menu a>span{display:inline-block}
-.sidebar-menu .main-menu a:hover{color:#fff}
+.sidebar-menu .main-menu a:hover{color:#111827}
 .sidebar-menu.fixed{height:100%}
 .sidebar-menu.fixed .sidebar-menu-inner{position:fixed;left:0;top:0;bottom:0;width:inherit;overflow:hidden}
 .sidebar-menu .main-menu ul{display:none;margin:0;padding:0;overflow:hidden;list-style:none}
@@ -97,7 +100,7 @@ footer.main-footer .go-up a:hover{background-color:rgba(44,46,47,.1)}footer.main
 .sidebar-menu.collapsed .main-menu>li>a>span{display:none}
 .sidebar-menu.collapsed .main-menu>li>a>span.label{display:block;position:absolute;right:0;top:0}
 .sidebar-menu.collapsed .main-menu>li.has-sub>a:before{display:none}.sidebar-menu.collapsed .main-menu>li.opened>ul{display:none}
-.sidebar-menu.collapsed .main-menu>li>ul{position:absolute;background:#232629;width:250px;top:0;left:100%;text-align:left}
+.sidebar-menu.collapsed .main-menu>li>ul{position:absolute;background:#fff;border:1px solid #e6eaf0;box-shadow:0 8px 24px rgba(0,0,0,.12);width:250px;top:0;left:100%;text-align:left}
 .page-body.right-sidebar .sidebar-menu.collapsed .main-menu>li>ul{left:auto;right:100%}
 .sidebar-menu.collapsed .main-menu>li>ul>li>a{padding-left:20px}.sidebar-menu.collapsed .main-menu>li>ul>li>ul>li>a{padding-left:35px}
 .sidebar-menu.collapsed .main-menu>li>ul>li>ul>li>ul>li>a{padding-left:50px}.sidebar-menu.collapsed .main-menu>li>ul>li>ul>li>ul>li>ul>li>a{padding-left:65px}
@@ -356,13 +359,13 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
 
 /* --- black: sidebar (previously untouched -- this is what made the
    sidebar look like it ignored the light/dark toggle entirely) --- */
-.black .sidebar-menu{background:#0e1013}
+.black .sidebar-menu{background:#0e1013;border-right-color:#20242a}
 .black .sidebar-menu .logo-env{border-bottom-color:#20242a}
 .black .sidebar-menu .main-menu a{color:#8b9198;border-bottom-color:#20242a}
 .black .sidebar-menu .main-menu a:hover{color:#fff}
-.black .sidebar-menu .main-menu li.active>a{background:rgba(255,107,107,.16)}
+.black .sidebar-menu .main-menu li.active>a{color:#fff;background:rgba(255,107,107,.16)}
 .black .sidebar-menu.collapsed .main-menu>li.active,.black .sidebar-menu.collapsed .main-menu>li li.active{background-color:rgba(255,107,107,.16)}
-.black .sidebar-menu.collapsed .main-menu>li>ul{background:#0e1013}
+.black .sidebar-menu.collapsed .main-menu>li>ul{background:#0e1013;border-color:#20242a;box-shadow:0 8px 24px rgba(0,0,0,.4)}
 
 /* --- black: accent buttons, brightened for contrast against dark surfaces --- */
 .black .but-home{background:#ff6b6b}
@@ -377,7 +380,8 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
 /* --- category site-count badge --- */
 .io-cat-count{display:inline-block;margin-left:8px;padding:1px 8px;font-size:11px;line-height:16px;border-radius:10px;background:rgba(136,136,136,.15);color:#767676;vertical-align:middle}
 .black .io-cat-count{background:rgba(255,255,255,.08);color:#b7b7b7}
-.sidebar-menu .io-cat-count{background:rgba(255,255,255,.08);color:#8a8f93}
+.sidebar-menu .io-cat-count{background:rgba(0,0,0,.06);color:#6b7280}
+.black .sidebar-menu .io-cat-count{background:rgba(255,255,255,.08);color:#8a8f93}
 
 /* --- light / dark / system theme toggle --- */
 .io-theme-toggle{display:inline-flex;align-items:center;gap:2px;background:rgba(136,136,136,.12);border-radius:20px;padding:3px;vertical-align:middle}
