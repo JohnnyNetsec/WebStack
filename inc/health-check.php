@@ -243,6 +243,12 @@ class IO_Link_Health {
 	 * drop the fragment, and ignore a single trailing slash on the path.
 	 * Path and query are left as-is (case-sensitive on some servers), so this
 	 * only catches genuinely identical addresses, not merely similar ones.
+	 *
+	 * http and https are treated as the same address: almost every site
+	 * either redirects one to the other or serves identical content on both,
+	 * so keeping them distinct only produced false "different link" results
+	 * (e.g. http://example.com and https://example.com were not being
+	 * flagged as duplicates of each other).
 	 */
 	public static function normalize_url( $url ) {
 		$url = trim( (string) $url );
@@ -254,6 +260,9 @@ class IO_Link_Health {
 			return strtolower( $url );
 		}
 		$scheme = isset( $parts['scheme'] ) ? strtolower( $parts['scheme'] ) : 'http';
+		if ( in_array( $scheme, array( 'http', 'https' ), true ) ) {
+			$scheme = 'http';
+		}
 		$host   = strtolower( $parts['host'] );
 		$port   = isset( $parts['port'] ) ? ':' . $parts['port'] : '';
 		$path   = isset( $parts['path'] ) ? rtrim( $parts['path'], '/' ) : '';
