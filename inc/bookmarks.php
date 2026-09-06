@@ -119,6 +119,38 @@ class IO_Bookmarks {
 	}
 
 	/**
+	 * Drop characters a title or folder name cannot survive a round trip
+	 * through the database.
+	 *
+	 * Titles and folder names come straight from whatever the browser wrote
+	 * into the export -- including emoji, which make up almost all of the
+	 * "astral plane" Unicode range (U+10000 and above) and are stored as
+	 * 4-byte UTF-8. A site whose tables still use the old 3-byte-max "utf8"
+	 * charset (common on databases created before WordPress's 2015 utf8mb4
+	 * migration, and never converted since) cannot hold that, and depending
+	 * on the exact save path this can silently fail the ENTIRE write rather
+	 * than just dropping the one character -- which is what made a single
+	 * emoji in one bookmark's title break preview storage for the whole
+	 * file. Stripping it here, once, up front, means every downstream write
+	 * (the preview option, and the actual imported post/category) is safe
+	 * regardless of which charset this particular install's tables use.
+	 */
+	private static function strip_unsupported_chars( $text ) {
+		$text = (string) $text;
+		if ( function_exists( 'wp_check_invalid_utf8' ) ) {
+			$text = wp_check_invalid_utf8( $text, true );
+		}
+		$stripped = preg_replace( '/[\x{10000}-\x{10FFFF}]/u', '', $text );
+		if ( null === $stripped ) {
+			return $text;
+		}
+		// An emoji is usually surrounded by spaces of its own (browsers pad
+		// titles around them); removing just the character would otherwise
+		// leave that spacing behind.
+		return trim( preg_replace( '/\s+/u', ' ', $stripped ) );
+	}
+
+	/**
 	 * Recursively walk the parsed DOM, tracking the folder-name chain.
 	 *
 	 * The real structure browsers write never explicitly closes <DT>, so the
@@ -140,12 +172,12 @@ class IO_Bookmarks {
 			}
 			switch ( $child->tagName ) {
 				case 'h3':
-					$pending = trim( $child->textContent );
+					$pending = self::strip_unsupported_chars( trim( $child->textContent ) );
 					break;
 
 				case 'a':
 					$bookmarks[] = array(
-						'title' => trim( $child->textContent ),
+						'title' => self::strip_unsupported_chars( trim( $child->textContent ) ),
 						'url'   => trim( $child->getAttribute( 'href' ) ),
 						'path'  => $path,
 					);
@@ -277,8 +309,14 @@ class IO_Bookmarks {
 			'data'    => $preview,
 			'expires' => $now + HOUR_IN_SECONDS,
 		);
-		update_option( self::OPT_PREVIEWS, $all, false );
-		return $token;
+		// update_option() returning false here means the write to the database
+		// itself failed (e.g. content the table's charset cannot store slipping
+		// past strip_unsupported_chars() some other way). Reporting that
+		// honestly, instead of redirecting to a token that was never actually
+		// saved, is what would have made this fail fast instead of looking
+		// exactly like an ordinary expired preview.
+		$saved = update_option( self::OPT_PREVIEWS, $all, false );
+		return $saved ? $token : false;
 	}
 
 	/** Retrieve a still-valid pending preview by token, or null if gone/expired. */
@@ -470,6 +508,10 @@ class IO_Bookmarks {
 
 		$preview = self::build_preview( $parsed );
 		$token   = self::save_pending_preview( $preview );
+
+		if ( false === $token ) {
+			self::redirect_with_error( 'save_failed' );
+		}
 
 		wp_safe_redirect( add_query_arg( 'preview', $token, self::page_url() ) );
 		exit;
@@ -698,6 +740,7 @@ JS;
 			'empty'   => __( 'That file appears to be empty.', 'i_theme' ),
 			'none'    => __( 'No bookmarks were found in that file.', 'i_theme' ),
 			'expired' => __( 'That preview has expired. Please upload the file again.', 'i_theme' ),
+			'save_failed' => __( 'Could not save the preview -- something in that file may not be compatible with this site\'s database. Please try again, or contact your host if this keeps happening.', 'i_theme' ),
 		);
 		$msg = isset( $messages[ $code ] ) ? $messages[ $code ] : __( 'Something went wrong with that file.', 'i_theme' );
 		echo '<div class="notice notice-error"><p>' . esc_html( $msg ) . '</p></div>';
