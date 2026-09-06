@@ -35,8 +35,20 @@ class IO_Bookmarks {
 	const LINK_META = '_sites_link';
 	const TAXONOMY  = 'favorites';
 
-	/** Where a pending preview is stashed between the upload and confirm steps. */
-	const TRANSIENT_PREFIX = 'io_bm_preview_';
+	/**
+	 * Where a pending preview is stashed between the upload and confirm steps.
+	 *
+	 * Deliberately a plain option, not a transient: set_transient()/get_transient()
+	 * hand off entirely to any active persistent object cache (Redis/Memcached,
+	 * common on managed hosts) and skip the database. If that cache does not
+	 * reliably return what was just written on the very next request -- a
+	 * different app-server node, a per-item size cap, a host dropin that treats
+	 * the transient group as non-persistent -- the preview vanishes immediately
+	 * and the user sees "expired" right after uploading. A plain option always
+	 * round-trips through the database, matching how OPT_STATE below already
+	 * behaves reliably.
+	 */
+	const OPT_PREVIEWS = 'io_bm_previews';
 
 	/** Where the in-progress (or last completed) import's state lives. */
 	const OPT_STATE = 'io_bm_import_state';
@@ -240,6 +252,60 @@ class IO_Bookmarks {
 		);
 	}
 
+	/**
+	 * Stash a built preview under a fresh token, pruning any other entries
+	 * that have already expired so an abandoned upload (started but never
+	 * confirmed or re-visited) does not accumulate forever.
+	 *
+	 * @return string the token to hand back to the browser
+	 */
+	private static function save_pending_preview( array $preview ) {
+		$all = get_option( self::OPT_PREVIEWS, array() );
+		if ( ! is_array( $all ) ) {
+			$all = array();
+		}
+
+		$now = time();
+		foreach ( $all as $existing_token => $entry ) {
+			if ( ! isset( $entry['expires'] ) || $entry['expires'] < $now ) {
+				unset( $all[ $existing_token ] );
+			}
+		}
+
+		$token = wp_generate_uuid4();
+		$all[ $token ] = array(
+			'data'    => $preview,
+			'expires' => $now + HOUR_IN_SECONDS,
+		);
+		update_option( self::OPT_PREVIEWS, $all, false );
+		return $token;
+	}
+
+	/** Retrieve a still-valid pending preview by token, or null if gone/expired. */
+	private static function get_pending_preview( $token ) {
+		if ( '' === (string) $token ) {
+			return null;
+		}
+		$all = get_option( self::OPT_PREVIEWS, array() );
+		if ( ! is_array( $all ) || ! isset( $all[ $token ] ) ) {
+			return null;
+		}
+		$entry = $all[ $token ];
+		if ( ! isset( $entry['expires'] ) || $entry['expires'] < time() ) {
+			return null;
+		}
+		return isset( $entry['data'] ) ? $entry['data'] : null;
+	}
+
+	/** Remove one pending preview (after it's confirmed, or found expired). */
+	private static function delete_pending_preview( $token ) {
+		$all = get_option( self::OPT_PREVIEWS, array() );
+		if ( is_array( $all ) && isset( $all[ $token ] ) ) {
+			unset( $all[ $token ] );
+			update_option( self::OPT_PREVIEWS, $all, false );
+		}
+	}
+
 	/* ---------------------------------------------------------------------
 	 * Import: category resolution + batched insert
 	 * ------------------------------------------------------------------ */
@@ -403,8 +469,7 @@ class IO_Bookmarks {
 		}
 
 		$preview = self::build_preview( $parsed );
-		$token   = wp_generate_uuid4();
-		set_transient( self::TRANSIENT_PREFIX . $token, $preview, HOUR_IN_SECONDS );
+		$token   = self::save_pending_preview( $preview );
 
 		wp_safe_redirect( add_query_arg( 'preview', $token, self::page_url() ) );
 		exit;
@@ -422,13 +487,13 @@ class IO_Bookmarks {
 		check_admin_referer( 'io_bm_confirm' );
 
 		$token   = isset( $_POST['token'] ) ? sanitize_text_field( wp_unslash( $_POST['token'] ) ) : '';
-		$preview = $token ? get_transient( self::TRANSIENT_PREFIX . $token ) : false;
+		$preview = $token ? self::get_pending_preview( $token ) : null;
 
 		if ( ! $preview || empty( $preview['to_import'] ) ) {
 			self::redirect_with_error( 'expired' );
 		}
 
-		delete_transient( self::TRANSIENT_PREFIX . $token );
+		self::delete_pending_preview( $token );
 		self::start_import( $preview['to_import'] );
 
 		wp_safe_redirect( self::page_url() );
@@ -606,7 +671,7 @@ JS;
 				$rendered_preview = false;
 				if ( isset( $_GET['preview'] ) ) {
 					$token   = sanitize_text_field( wp_unslash( $_GET['preview'] ) );
-					$preview = get_transient( self::TRANSIENT_PREFIX . $token );
+					$preview = self::get_pending_preview( $token );
 					if ( $preview ) {
 						self::render_preview( $token, $preview );
 						$rendered_preview = true;
