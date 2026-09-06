@@ -1,5 +1,5 @@
 # WebStack
-The WordPress version of the WebStack theme. <a href="http://webstack.iotheme.cn/">Visit the demo site</a>
+The WordPress version of the WebStack theme. <a href="http://bestit.eu.org/">Visit the demo site</a>
 <br/>
 
 ### Disclaimer
