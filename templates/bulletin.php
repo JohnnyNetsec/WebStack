@@ -24,7 +24,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; } ?>
 					);
 					query_posts($args); while ( have_posts() ) : the_post();
 				?>
-				<?php the_title( sprintf( '<li class="scrolltext-title overflowClip_1"><a href="%s" rel="bulletin">', esc_url( get_permalink() ) ), '</a> ('. get_the_time('m/d').')</li>' ); ?>
+				<?php the_title( sprintf( '<li class="scrolltext-title overflowClip_1"><a href="%s" rel="bulletin">', esc_url( get_permalink() ) ), '</a> ('. get_the_time('m/d/Y').')</li>' ); ?>
 				<?php endwhile; ?>
 				<?php wp_reset_query(); ?>
             </ul>
