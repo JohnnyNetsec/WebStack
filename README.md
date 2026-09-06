@@ -63,6 +63,31 @@ RewriteRule . /index.php [L]
 + <a href="https://www.iotheme.cn/store/onenav.html" target="_blank">Need more features? Click here -></a>
 <br/>
 
+### Link Health Check
+Under **Sites -> Link Health** in the admin, the theme can check whether the URL on
+every "Sites" entry is still reachable.
+
++ **Check all links now** runs a check on demand. With a small number of entries this
+  finishes in seconds; larger libraries are checked in short batches so the request
+  never times out.
++ **Automatic checks** can run Daily, Weekly or Monthly via WP-Cron, or stay Manual
+  only. Scheduled runs only ever update the report — they never delete or modify
+  anything on their own.
++ Each link is classified as:
+  - **OK** — reachable (a redirect counts as reachable).
+  - **Broken** — a 404, a server error, or the domain could not be resolved at all.
+  - **Could not verify** — the request timed out, hit an SSL problem, or the site
+    returned 401/403/405/429. These responses usually mean the site is blocking
+    automated requests (Cloudflare and similar are common causes), not that it is
+    down, so they are kept separate from Broken rather than counted as dead links.
+  - A link only becomes Broken after failing two checks in a row (configurable), so
+    a brief outage on the target site does not misreport it.
++ Results are filterable by status, and each entry has a one-click **Recheck**.
+
+This first version is read-only: it reports what it finds but does not delete
+anything. Deleting broken entries (individually or in bulk, to Trash so nothing is
+lost permanently) is a planned follow-up.
+
 ### Admin screenshots
 <br/>
 
