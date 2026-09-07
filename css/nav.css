@@ -399,6 +399,16 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
 
 /* --- collapsible category heading --- */
 .io-cat-heading{font-size:15px;font-weight:700;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;user-select:none}
-.io-cat-heading .icon-io-tag{display:inline-block;transform:scale(.75);transform-origin:left center;vertical-align:middle}
+/*
+ * Resizing .icon-io-tag itself via `transform: scale()` was the wrong way
+ * to shrink it: that element has zero intrinsic size (its visible icon is
+ * an absolutely-positioned ::after), and a `transform` on an ancestor of an
+ * absolutely-positioned element establishes a NEW containing block for it,
+ * changing how its (offset-less, "auto") position resolves -- which is
+ * what misaligned the icon and, by inflating the line box unexpectedly,
+ * the chevron beside it too. Resizing the actual ::after box directly
+ * avoids that entirely.
+ */
+.io-cat-heading .icon-io-tag::after{width:15px;height:13px;background-size:100%}
 .io-cat-chevron{font-size:14px;width:14px;display:inline-block;margin-right:8px;vertical-align:middle;transition:transform .2s ease-in-out}
 .io-cat-heading.collapsed .io-cat-chevron{transform:rotate(-90deg)}
