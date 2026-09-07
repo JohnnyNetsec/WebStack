@@ -26,7 +26,7 @@ Any "Webstack Pro" builds circulating online today are stolen copies of the auth
 + Per-entry and per-category **visibility levels** -- Everyone, Logged-in users only, or Administrators only -- so parts of the directory can be private without a separate membership plugin.
 + Custom permalinks (`sites/{id}.html`), sortable "Order" columns with Quick Edit support on both Sites and Categories, and a category filter dropdown on the Sites list screen.
 + Optional **detail pages** per site (toggle in Theme Settings) -- off by default, so cards link straight to the target URL; when on, each site gets its own page with a QR code, related-sites suggestions, and comments.
-+ Outbound clicks can be routed through an internal `/go/` redirect rather than linking straight out, if you'd rather not leak your own domain as the referrer.
++ Outbound clicks can be routed through an internal `/go/` redirect rather than linking straight out, if you'd rather not leak your own domain as the referrer -- and when it's on, each click is counted per site, visible as a sortable "Clicks" column on the Sites list.
 
 **Link Health Check** (Sites -> Link Health)
 Automatically or on demand, checks every site's URL and flags broken, unreachable, or duplicate entries, with one-click Trash (never a permanent delete). See [Link Health Check](#link-health-check) below for the full detail.
