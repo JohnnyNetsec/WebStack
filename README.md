@@ -138,7 +138,11 @@ collection or take one back out.
 <br/>
 
 ### Credits
-Maintained by <a href="https://51sec.org" target="_blank">NetSec</a>. Thanks to <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a> for the front-end design.
+Originally created by <a href="https://www.iowen.cn" target="_blank">owen</a> (and LoveDoLove), whose work this theme is forked from. Thanks to <a href="https://github.com/WebStackPage/WebStackPage.github.io" target="_blank">Viggo</a> for the front-end design. This fork has since been extensively rewritten (Link Health, Import/Export Bookmarks, category redesign, the light/dark theme, and more) and is maintained by <a href="https://51sec.org" target="_blank">NetSec</a>.
+<br/>
+
+### License
+Licensed under the <a href="https://www.gnu.org/licenses/old-licenses/gpl-2.0.html" target="_blank">GNU General Public License v2 (or later)</a> -- see [LICENSE](LICENSE) for the full text and copyright notices (both the original authors' and NetSec's). A fork or redistribution needs to keep those copyright notices intact and stay open-source under GPL-compatible terms, per the license; it isn't required to keep any particular visible credit in the software's own UI.
 <br/>
 
 ### Updates
