@@ -83,9 +83,9 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }  ?>
                     <div class="xe-user-img">
                         <?php echo $hc_dot; ?>
                         <?php if(io_get_option('lazyload')): ?>
-                        <img class="img-circle lazy" src="<?php echo $default_ico; ?>" data-src="<?php echo $ico ?>" onerror="javascript:this.src='<?php echo $default_ico; ?>'" width="40" height="40">
+                        <img class="img-circle lazy" src="<?php echo $default_ico; ?>" data-src="<?php echo $ico ?>" onerror="javascript:this.src='<?php echo $default_ico; ?>'" width="20" height="20">
                         <?php else: ?>
-                        <img class="img-circle lazy" src="<?php echo $ico ?>" onerror="javascript:this.src='<?php echo $default_ico; ?>'" width="40" height="40">
+                        <img class="img-circle lazy" src="<?php echo $ico ?>" onerror="javascript:this.src='<?php echo $default_ico; ?>'" width="20" height="20">
                         <?php endif ?>
                     </div>
                     <div class="xe-comment">

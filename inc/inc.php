@@ -244,7 +244,7 @@ function io_head_favicon(){
         echo "<link rel='apple-touch-icon' href='" . io_get_option('apple_icon','') . "'>";
     }
 }
-add_action('admin_head', 'io_head_favicon');
+add_action('wp_head', 'io_head_favicon');
 
 
 /**

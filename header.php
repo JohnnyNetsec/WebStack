@@ -29,8 +29,6 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }
 <meta property="og:description" content="<?php echo io_get_option('seo_home_keywords') ?>">
 <meta property="og:image" content="<?php echo get_theme_file_uri('/screenshot.jpg') ?>">
 <meta property="og:site_name" content="<?php echo io_get_option('seo_home_desc') ?>">
-<link rel="shortcut icon" href="<?php echo io_get_option('favicon') ?>">
-<link rel="apple-touch-icon" href="<?php echo io_get_option('apple_icon') ?>">
 <?php wp_head(); ?>
 </head> 
  <body <?php body_class('page-body '.io_get_option('theme_mode')) ?>>
