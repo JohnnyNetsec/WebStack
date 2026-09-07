@@ -18,6 +18,39 @@ Any "Webstack Pro" builds circulating online today are stolen copies of the auth
 ![Thumbnail_index](https://owen0o0.github.io/ioStaticResources/webstack/01.png)
 <br/>
 
+### Features
+
+**Directory &amp; categories**
++ A dedicated **Sites** post type holds each directory entry (title, URL, description, icon, order, visibility), separate from ordinary posts/pages.
++ Site Categories go two levels deep at most, and a category with subcategories can't hold entries directly -- the admin editor enforces this with a single-select dropdown (a parent-with-children shows only as a group heading, not a selectable option) and re-validates it server-side on save, reverting an invalid publish attempt back to Draft with an explanation rather than silently accepting it.
++ Per-entry and per-category **visibility levels** -- Everyone, Logged-in users only, or Administrators only -- so parts of the directory can be private without a separate membership plugin.
++ Custom permalinks (`sites/{id}.html`), sortable "Order" columns with Quick Edit support on both Sites and Categories, and a category filter dropdown on the Sites list screen.
++ Optional **detail pages** per site (toggle in Theme Settings) -- off by default, so cards link straight to the target URL; when on, each site gets its own page with a QR code, related-sites suggestions, and comments.
++ Outbound clicks can be routed through an internal `/go/` redirect rather than linking straight out, if you'd rather not leak your own domain as the referrer.
+
+**Link Health Check** (Sites -> Link Health)
+Automatically or on demand, checks every site's URL and flags broken, unreachable, or duplicate entries, with one-click Trash (never a permanent delete). See [Link Health Check](#link-health-check) below for the full detail.
+
+**Import/Export Bookmarks** (Sites -> Import/Export)
+Import a browser's bookmarks HTML export straight into the directory (with a preview before anything is written), or export the whole directory back out as a bookmarks file. See [Import/Export Bookmarks](#importexport-bookmarks) below.
+
+**Visitor-submitted sites**
+A "Submit a Site" page template lets visitors propose a new entry (title, URL, description, icon or WeChat QR upload, category) without admin access. Submissions land as Pending, so nothing appears publicly until you review and publish it; a cookie-based cooldown limits repeat submissions from the same visitor.
+
+**Search**
+Front-end search matches against post titles as well as each site's description and URL (not just post content), and an optional "super search" widget lets visitors jump straight to ~30 third-party search engines and tools (Google, Bing, job boards, SEO tools, and more) without leaving the page.
+
+**Appearance**
++ A light / dark / system color-scheme toggle, remembered per visitor, with no flash of the wrong theme on page load.
++ A site-count badge next to every category, in both the sidebar and the homepage.
++ Configurable cards-per-row, homepage bulletin ticker, "Friendly Links" (WordPress's built-in Links/Blogroll manager), and three independent ad slots (homepage, detail-page sidebar, footer).
++ Logo, favicon, and login-page branding are all swappable from Theme Settings without editing code.
+
+**Theme Settings** (a full settings page under its own admin menu)
+Covers icons/branding, general behavior (detail pages, tooltip content, cards-per-row, bulletins, friendly links, color scheme, how many sites to preview per homepage category), SEO meta (homepage keywords/description), custom CSS/JS injection, ad slot content, a settings backup/restore tool, and a set of optimization toggles: trimming unnecessary `<head>` output, restricting the REST API to logged-in users, disabling XML-RPC pingbacks and RSS/Atom feeds, and choosing a Gravatar mirror.
+
+<br/>
+
 ### Requirements
 + WordPress 4.4+
 + WordPress pretty permalinks
