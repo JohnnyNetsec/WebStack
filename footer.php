@@ -135,6 +135,36 @@ if ($police_icp = io_get_option('police_icp')) {
     });
     </script>
 <?php endif; ?>
+<script type="text/javascript">
+(function(){
+    // Hide the top bar while scrolling down (past a small threshold so it
+    // doesn't flicker right at the top of the page), show it again on any
+    // scroll back up. Applies site-wide, unlike the smooth-scroll/collapse
+    // script above, since this header appears on every page, not just the
+    // homepage.
+    var $nav = $('nav.navbar.user-info-navbar');
+    if (!$nav.length) return;
+    var lastScroll = 0;
+    var hideThreshold = 80;
+    var ticking = false;
+    function onScroll(){
+        var current = window.pageYOffset || document.documentElement.scrollTop;
+        if (current > lastScroll && current > hideThreshold) {
+            $nav.addClass('io-nav-hidden');
+        } else {
+            $nav.removeClass('io-nav-hidden');
+        }
+        lastScroll = current <= 0 ? 0 : current;
+        ticking = false;
+    }
+    window.addEventListener('scroll', function(){
+        if (!ticking) {
+            window.requestAnimationFrame(onScroll);
+            ticking = true;
+        }
+    }, { passive: true });
+})();
+</script>
 <?php wp_footer(); ?>
 <!-- Custom code -->
 <?php echo io_get_option('code_2_footer');?>

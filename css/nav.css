@@ -27,7 +27,7 @@ a:hover,a:focus{color:#232323;text-decoration:none}
 .ps-container.ie .ps-scrollbar-x,.ps-container.ie .ps-scrollbar-y{visibility:hidden}
 .ps-container.ie:hover .ps-scrollbar-x,.ps-container.ie:hover .ps-scrollbar-y,.ps-container.ie.hover .ps-scrollbar-x,.ps-container.ie.hover .ps-scrollbar-y{visibility:visible}
 .xe-comment-entry img{float:left;display:block;background:rgba(136,136,136,.15);margin-right:8px}
-.xe-comment p{margin-bottom:0px;font-size:12px}
+.xe-comment p{margin-bottom:0px;font-size:11px}
 .xe-user-name{font-size:13px}
 .overflowClip_1{overflow:hidden;-o-text-overflow:ellipsis;text-overflow:ellipsis;word-break:break-all;display:-webkit-box!important;-webkit-line-clamp:1;-webkit-box-orient:vertical}
 .overflowClip_2{overflow:hidden;-o-text-overflow:ellipsis;text-overflow:ellipsis;word-break:break-all;display:-webkit-box!important;-webkit-line-clamp:2;-webkit-box-orient:vertical}
@@ -179,7 +179,14 @@ footer.main-footer .footer-text{float:none;text-align:center;width:100%}
 
 /* --- customize --- */
 .nothing{padding:20px 0;margin:10px 0;text-align:center;color:#888;background:rgba(136,136,136,.2);border-radius:5px}
-nav.navbar{position:fixed;z-index:2000!important;width:calc(100% - 250px);padding:0;background-color:transparent}
+nav.navbar{position:fixed;z-index:2000!important;width:calc(100% - 250px);padding:0;background-color:transparent;transition:transform .25s ease-in-out}
+/*
+ * A fixed pixel offset, not translateY(-100%): nav.navbar's only child
+ * (.navbar-content) is position:absolute, so nav.navbar's own computed
+ * height collapses to ~0 -- moving it by "100% of its own height" would
+ * be a no-op. 100px comfortably clears the bar's actual rendered height.
+ */
+nav.navbar.io-nav-hidden{transform:translateY(-100px)}
 .sidebar-menu.collapsed+.main-content>nav.navbar{width:calc(100% - 80px)}
 .xe-widget.xe-conversations:hover,.xe-widget.xe-conversations:focus{background:#fff!important;text-decoration:none}
 .xe-card.wechat a:after{content:'\f029';position:absolute;display:inline-block;font-family:FontAwesome;font-size:18px;color:#6d747a;margin-left:10px;bottom:0;right:5px}

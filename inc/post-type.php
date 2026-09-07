@@ -466,6 +466,24 @@ function sort_sites_order($query) {
     }
 }
 
+/**
+ * Sort Sites entries alphabetically by title on the front-end Site Category
+ * archive page (taxonomy-favorites.php), matching the homepage preview's
+ * own alphabetical order (inc/fav-content.php). Only the front-end main
+ * query for this one taxonomy is affected -- everything else (search,
+ * other archives, the admin list) is untouched.
+ */
+add_action( 'pre_get_posts', 'io_sort_favorites_alphabetically' );
+function io_sort_favorites_alphabetically( $query ) {
+    if ( is_admin() || ! $query->is_main_query() ) {
+        return;
+    }
+    if ( $query->is_tax( 'favorites' ) ) {
+        $query->set( 'orderby', 'title' );
+        $query->set( 'order', 'ASC' );
+    }
+}
+
 
 add_action('quick_edit_custom_box',  'io_add_quick_edit', 10, 2);
 function io_add_quick_edit($column_name, $post_type) {

@@ -40,8 +40,8 @@ function fav_con($mid, $visible) { ?>
             'post_type'           => 'sites',        // Custom post type, here 'sites'
             'ignore_sticky_posts' => 1,              // Ignore sticky posts
             'posts_per_page'      => $site_n,        // Number of posts to show
-            'meta_key'            => '_sites_order',
-            'orderby'             => array( 'meta_value_num' => 'DESC', 'ID' => 'DESC' ),
+            'orderby'             => 'title',
+            'order'               => 'ASC',
             'tax_query'           => array(
                 array(
                     'taxonomy' => 'favorites',       // Taxonomy name
