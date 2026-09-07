@@ -64,7 +64,7 @@ footer.main-footer .go-up a:hover{background-color:rgba(44,46,47,.1)}footer.main
 .sidebar-menu .main-menu a>i{display:inline-block;margin-right:10px}
 .sidebar-menu .main-menu a>i+span{padding-right:10px}
 .sidebar-menu .main-menu a>span{display:inline-block}
-.sidebar-menu .main-menu a:hover{color:#111827}
+.sidebar-menu .main-menu a:hover{color:#111827;transform:translateY(-2px)}
 .sidebar-menu.fixed{height:100%}
 .sidebar-menu.fixed .sidebar-menu-inner{position:fixed;left:0;top:0;bottom:0;width:inherit;overflow:hidden}
 .sidebar-menu .main-menu ul{display:none;margin:0;padding:0;overflow:hidden;list-style:none}
@@ -172,7 +172,7 @@ a:hover{text-decoration:none}
 .form-control:focus,.form-control:active{outline:0;-webkit-box-shadow:none;-moz-box-shadow:none;box-shadow:none}
 .text-gray{color:#555}
 .breadcrumb-env{margin:-10px 0 0 -15px}
-footer.main-footer .footer-text{float:left} 
+footer.main-footer .footer-text{float:none;text-align:center;width:100%}
 .panel.expanded .accordion-toggle:before{content:'–' !important}
 .but-home{color:#fff;background:#f14141;padding:10px 30px;border-radius:5px;font-size:18px;transition:.3s}
 .but-home:hover{color:#fff;background:#333}
@@ -363,7 +363,7 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
 .black .sidebar-menu{background:#0e1013;border-right-color:#20242a}
 .black .sidebar-menu .logo-env{border-bottom-color:#20242a}
 .black .sidebar-menu .main-menu a{color:#8b9198;border-bottom-color:#20242a}
-.black .sidebar-menu .main-menu a:hover{color:#fff}
+.black .sidebar-menu .main-menu a:hover{color:#fff;transform:translateY(-2px)}
 .black .sidebar-menu .main-menu li.active>a{color:#fff;background:rgba(255,107,107,.16)}
 .black .sidebar-menu.collapsed .main-menu>li.active,.black .sidebar-menu.collapsed .main-menu>li li.active{background-color:rgba(255,107,107,.16)}
 .black .sidebar-menu.collapsed .main-menu>li>ul{background:#0e1013;border-color:#20242a;box-shadow:0 8px 24px rgba(0,0,0,.4)}
@@ -396,3 +396,9 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
 @media screen and (max-width:767px){.io-theme-toggle{padding:2px;gap:1px}
 .io-theme-toggle a{width:24px;height:24px}
 }
+
+/* --- collapsible category heading --- */
+.io-cat-heading{font-size:15px;font-weight:700;cursor:pointer;-webkit-user-select:none;-moz-user-select:none;user-select:none}
+.io-cat-heading .icon-io-tag{display:inline-block;transform:scale(.75);transform-origin:left center;vertical-align:middle}
+.io-cat-chevron{font-size:14px;width:14px;display:inline-block;margin-right:8px;vertical-align:middle;transition:transform .2s ease-in-out}
+.io-cat-heading.collapsed .io-cat-chevron{transform:rotate(-90deg)}

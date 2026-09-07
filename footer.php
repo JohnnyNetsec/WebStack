@@ -92,6 +92,28 @@ if ($police_icp = io_get_option('police_icp')) {
                 easing: "swing"
             });
         });
+        $(document).on('click', '.io-cat-heading', function(){
+            var $h = $(this);
+            var target = $h.data('target');
+            var $body = $(target);
+            if (!$body.length) return;
+            var key = 'io_cat_collapsed_' + target;
+            var wasCollapsed = $h.hasClass('collapsed');
+            $h.toggleClass('collapsed');
+            $body.slideToggle(200);
+            try { localStorage.setItem(key, wasCollapsed ? '0' : '1'); } catch (e) {}
+        });
+        $('.io-cat-heading').each(function(){
+            var $h = $(this);
+            var target = $h.data('target');
+            var key = 'io_cat_collapsed_' + target;
+            var saved;
+            try { saved = localStorage.getItem(key); } catch (e) { saved = null; }
+            if (saved === '1') {
+                $h.addClass('collapsed');
+                $(target).hide();
+            }
+        });
         return false;
     });
 

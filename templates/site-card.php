@@ -30,7 +30,12 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }  ?>
                             $title = __('Invalid URL!','i_theme');
                         break;
                     case 'summary':
-                        $title = get_post_meta($post->ID, '_sites_sescribe', true);
+                        // Prefix with the full title (bold, on its own line) since the
+                        // card's own on-screen title is truncated with an ellipsis when
+                        // it's too long to fit -- otherwise a long title had no way to
+                        // be read in full.
+                        $title = '<strong>' . esc_html( get_the_title() ) . '</strong><br>' . esc_html( get_post_meta($post->ID, '_sites_sescribe', true) );
+                        $is_html = 'data-html="true"';
                         break;
                     case 'qr':
                         if($link_url=="")

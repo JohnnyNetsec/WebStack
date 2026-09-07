@@ -12,7 +12,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 function fav_con($mid, $visible) { ?>
-        <h4 class="text-gray" style="display: inline-block;"><i class="icon-io-tag" style="margin-right: 27px;" id="term-<?php echo $mid->term_id; ?>"></i><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></h4>
+        <h4 class="text-gray io-cat-heading" data-target="#io-cat-body-<?php echo $mid->term_id; ?>" style="display: inline-block;"><i class="fa fa-angle-down io-cat-chevron"></i><i class="icon-io-tag" style="margin-right: 27px;" id="term-<?php echo $mid->term_id; ?>"></i><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></h4>
         <?php
         if($visible == 2){
             echo '<div class="login-notice">'.__('Please log in to view this category','i_theme').'</div>';
@@ -30,8 +30,9 @@ function fav_con($mid, $visible) { ?>
           echo "<a class='btn-move' href='$link'>more+</a>";
         }
         ?>
+        <div class="io-cat-body" id="io-cat-body-<?php echo $mid->term_id; ?>">
         <div class="row">
-        <?php   
+        <?php
           // Declare $post as a global so later output is not the same post
           global $post;
           // The posts_per_page setting below matters most
@@ -64,6 +65,7 @@ function fav_con($mid, $visible) { ?>
               <?php include( get_theme_file_path() .'/templates/site-card.php' ); ?>
             </div>
           <?php endif; endwhile; endif; wp_reset_postdata(); ?>
-        </div>   
-        <br /> 
+        </div>
+        </div>
+        <br />
 <?php } ?>

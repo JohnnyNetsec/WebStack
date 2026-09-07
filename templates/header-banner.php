@@ -35,8 +35,13 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }  ?>
                 <a href="#" id="io-theme-system" title="<?php esc_attr_e( 'Match system', 'i_theme' ); ?>"><i class="fa fa-adjust"></i></a>
             </span>
         </li>
+        <?php if ( current_user_can( 'manage_options' ) ) : ?>
         <li class="hidden-sm hidden-xs">
-            <a href="https://github.com/JohnnyNetsec/WebStack" target="_blank"><i class="fa fa-github"></i> GitHub</a>
+            <a href="<?php echo esc_url( admin_url() ); ?>" title="<?php esc_attr_e( 'Admin', 'i_theme' ); ?>"><i class="fa fa-tachometer"></i></a>
+        </li>
+        <?php endif; ?>
+        <li class="hidden-sm hidden-xs">
+            <a href="https://github.com/JohnnyNetsec/WebStack" target="_blank" title="GitHub"><i class="fa fa-github"></i></a>
         </li>
       </ul>
     </div>
