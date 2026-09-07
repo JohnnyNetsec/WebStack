@@ -43,8 +43,11 @@ Front-end search matches against post titles as well as each site's description 
 **Appearance**
 + A light / dark / system color-scheme toggle, remembered per visitor, with no flash of the wrong theme on page load.
 + A site-count badge next to every category, in both the sidebar and the homepage.
++ Each homepage category section can be collapsed/expanded by clicking its heading -- handy once you have a lot of categories -- and remembers which ones you've collapsed the next time you visit.
++ When the site-card tooltip is set to "Summary," hovering a card shows the site's full title (in case it's too long to fit on the card itself) above its description.
 + Configurable cards-per-row, homepage bulletin ticker, "Friendly Links" (WordPress's built-in Links/Blogroll manager), and three independent ad slots (homepage, detail-page sidebar, footer).
 + Logo, favicon, and login-page branding are all swappable from Theme Settings without editing code.
++ A one-click shortcut back to wp-admin in the header, visible only to users who can manage the site -- useful since the theme hides WordPress's own admin bar on the front end.
 
 **Theme Settings** (a full settings page under its own admin menu)
 Covers icons/branding, general behavior (detail pages, tooltip content, cards-per-row, bulletins, friendly links, color scheme, how many sites to preview per homepage category), SEO meta (homepage keywords/description), custom CSS/JS injection, ad slot content, a settings backup/restore tool, and a set of optimization toggles: trimming unnecessary `<head>` output, restricting the REST API to logged-in users, disabling XML-RPC pingbacks and RSS/Atom feeds, and choosing a Gravatar mirror.
