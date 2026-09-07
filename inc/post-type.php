@@ -367,11 +367,12 @@ add_filter('manage_edit-sites_columns', 'io_ordinal_manage_posts_columns');
 add_action('manage_posts_custom_column','io_ordinal_manage_posts_custom_column',10,2);
 function io_ordinal_manage_posts_columns($columns){
     $columns['link']       = 'Link';
-	$columns['ordinal']    = 'Order'; 
-	$columns['visible']    = 'Visibility'; 
+	$columns['ordinal']    = 'Order';
+	$columns['visible']    = 'Visibility';
+	$columns['clicks']     = 'Clicks';
 	return $columns;
 }
-function io_ordinal_manage_posts_custom_column($column_name,$id){ 
+function io_ordinal_manage_posts_custom_column($column_name,$id){
 	switch( $column_name ) :
 		case 'link': {
 			echo get_post_meta($id, '_sites_link', true);
@@ -379,6 +380,10 @@ function io_ordinal_manage_posts_custom_column($column_name,$id){
 		}
 		case 'ordinal': {
 			echo get_post_meta($id, '_sites_order', true);
+			break;
+		}
+		case 'clicks': {
+			echo (int) get_post_meta($id, '_sites_clicks', true);
 			break;
 		}
 		case 'visible': {
@@ -435,6 +440,7 @@ add_action('pre_get_posts', 'sort_sites_order');
 function sort_sites_order_column($defaults)
 {
     $defaults['ordinal'] = 'ordinal';
+    $defaults['clicks']  = 'clicks';
     return $defaults;
 }
 function sort_favorites_order_column($defaults)
@@ -448,6 +454,10 @@ function sort_sites_order($query) {
     $orderby = $query->get('orderby');
     if('ordinal' == $orderby) {
         $query->set('meta_key', '_sites_order');
+        $query->set('orderby', 'meta_value_num');
+    }
+    if('clicks' == $orderby) {
+        $query->set('meta_key', '_sites_clicks');
         $query->set('orderby', 'meta_value_num');
     }
     if('ca_ordinal' == $orderby) {

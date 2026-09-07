@@ -53,7 +53,7 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }  ?>
                     $blank = '';
                 }else{
                     if(io_get_option('is_go'))
-                        $url = home_url().'/go/?url='.$link_url ;
+                        $url = home_url().'/go/?id='.$post->ID.'&url='.$link_url ;
                     else
                         $url = $link_url;
                 }

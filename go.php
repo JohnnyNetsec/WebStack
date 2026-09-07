@@ -36,6 +36,19 @@ if ( ! preg_match( '#^https?://#i', $target ) ) {
     wp_safe_redirect( home_url() );
     exit;
 }
+
+/*
+ * Click count per site. Not atomic (a plain read-then-write), which can
+ * under-count on truly concurrent clicks for the same site -- an accepted
+ * trade-off for a simple visit counter rather than a precision analytics
+ * pipeline, and consistent with how the rest of this theme already treats
+ * counters (e.g. Link Health's consecutive-failure count).
+ */
+$site_id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
+if ( $site_id && 'sites' === get_post_type( $site_id ) ) {
+    $clicks = (int) get_post_meta( $site_id, '_sites_clicks', true );
+    update_post_meta( $site_id, '_sites_clicks', $clicks + 1 );
+}
 ?>
 <!DOCTYPE html>
 <html>
