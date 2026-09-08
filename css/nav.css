@@ -365,6 +365,15 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
 .io-hc-dot-duplicate{background:#3b82f6}
 .black .io-hc-dot{border-color:#1f2229}
 
+/*
+ * "New" ribbon for recently-added sites. The card link (.xe-widget) is
+ * already position:absolute (see the .xe-widget/.xe-widget.xe-conversations
+ * rules above), which establishes the containing block this badge is
+ * placed against, so no extra wrapper is needed.
+ */
+.io-new-badge{position:absolute;top:-6px;right:6px;z-index:2;padding:1px 6px;font-size:10px;line-height:15px;font-weight:700;letter-spacing:.02em;color:#fff;background:#16a34a;border-radius:9px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+.black .io-new-badge{background:#22c55e;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+
 /* --- black: sidebar (previously untouched -- this is what made the
    sidebar look like it ignored the light/dark toggle entirely) --- */
 .black .sidebar-menu{background:#0e1013;border-right-color:#20242a}
@@ -421,35 +430,38 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
 .io-cat-heading.collapsed .io-cat-chevron{transform:rotate(-90deg)}
 
 /*
- * Each section heading gets its own hue, read from the --cat-hue custom
- * property fav_con() derives from the category's term ID (see
- * inc/fav-content.php). That keys color to the category itself rather than
- * its position on the page, so it scales to an arbitrary, growing number of
- * categories/sub-categories: colors never run out and never reshuffle when
- * categories are added, removed or reordered elsewhere. Saturation/lightness
- * are fixed so every heading stays readable regardless of hue; dark mode
- * gets a lighter, slightly less saturated tone for contrast against the
- * near-black background. The fallback hue (210, blue) only applies if the
- * custom property is ever missing.
+ * Each section heading is colored via --cat-color-light/--cat-color-dark,
+ * two custom properties fav_con() (inc/fav-content.php) resolves from
+ * io_cat_colors() in inc/inc.php: either the category's manual color
+ * override (a "_cat_color" term meta an admin can set on the category's
+ * edit screen), or an automatic hue derived from the category's term ID.
+ * Resolving the actual color in PHP -- rather than just a hue here in CSS
+ * -- is what lets an override replace the automatic color at all. Keying
+ * the automatic color to the term ID rather than page position means it
+ * scales to an arbitrary, growing number of categories/sub-categories:
+ * colors never run out and never reshuffle when categories are added,
+ * removed or reordered elsewhere. The fallbacks (#555/#888, matching
+ * .text-gray below) only apply if the custom properties are ever missing.
  */
-.io-cat-heading{color:hsl(var(--cat-hue,210), 72%, 40%)}
-.black .io-cat-heading{color:hsl(var(--cat-hue,210), 65%, 68%)}
+.io-cat-heading{color:var(--cat-color-light,#555)}
+.black .io-cat-heading{color:var(--cat-color-dark,#888)}
 
 /*
- * Sidebar menu: same --cat-hue and the same HSL values as .io-cat-heading
- * above, so a category's sidebar link is the identical color to its
- * section heading in the main content, not just a similarly-toned one.
- * Only leaf categories carry --cat-hue (see templates/header-nav.php) --
- * a parent row that merely groups children (and so has no matching
- * section of its own) is left in the default color. The extra ".cat-link"
- * class keeps this from touching the unrelated wp_nav_menu item in
- * ".submit-tag". Specificity is deliberately kept equal to the existing
- * hover rule (both .sidebar-menu .main-menu a + one class) but lower than
- * the active-item rule (li.active>a, one element more specific), and an
- * explicit :hover override below restores the normal hover color -- so
- * hovering/selecting a link still behaves exactly as it did before.
+ * Sidebar menu: the same --cat-color-light/--cat-color-dark as
+ * .io-cat-heading above, so a category's sidebar link is the identical
+ * color to its section heading in the main content, not just a
+ * similarly-toned one. Only leaf categories carry these properties (see
+ * templates/header-nav.php) -- a parent row that merely groups children
+ * (and so has no matching section of its own) is left in the default
+ * color. The extra ".cat-link" class keeps this from touching the
+ * unrelated wp_nav_menu item in ".submit-tag". Specificity is deliberately
+ * kept equal to the existing hover rule (both .sidebar-menu .main-menu a +
+ * one class) but lower than the active-item rule (li.active>a, one
+ * element more specific), and an explicit :hover override below restores
+ * the normal hover color -- so hovering/selecting a link still behaves
+ * exactly as it did before.
  */
-.sidebar-menu .main-menu a.cat-link{color:hsl(var(--cat-hue,210), 72%, 40%)}
+.sidebar-menu .main-menu a.cat-link{color:var(--cat-color-light,#4b5563)}
 .sidebar-menu .main-menu a.cat-link:hover{color:#111827}
-.black .sidebar-menu .main-menu a.cat-link{color:hsl(var(--cat-hue,210), 65%, 68%)}
+.black .sidebar-menu .main-menu a.cat-link{color:var(--cat-color-dark,#8b9198)}
 .black .sidebar-menu .main-menu a.cat-link:hover{color:#fff}

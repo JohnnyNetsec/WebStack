@@ -82,8 +82,23 @@ if ( ! defined( 'ABSPATH' ) ) { exit; }  ?>
                     $hc_dot    = '<span class="io-hc-dot io-hc-dot-' . esc_attr( $hc_status ) . '" title="' . esc_attr( $hc_title ) . '"></span>';
                 }
             }
+
+            // "New" ribbon for sites published in the last 30 days -- a curated
+            // directory's own publish date is the only signal available for
+            // "when was this added", so that's what this goes by. Compared in
+            // GMT (get_post_time(..., true)) against time() (always UTC)
+            // rather than the site's local time, so it isn't off by the site's
+            // UTC offset.
+            $new_badge = '';
+            if ( 'sites' === get_post_type() ) {
+                $published_gmt = get_post_time( 'U', true, $post );
+                if ( $published_gmt && ( time() - $published_gmt ) < 30 * DAY_IN_SECONDS ) {
+                    $new_badge = '<span class="io-new-badge">' . __( 'New', 'i_theme' ) . '</span>';
+                }
+            }
             ?>
             <a href="<?php echo $url ?>" target="<?php echo $blank ?>" class="xe-widget xe-conversations box2 label-info" <?php echo $tooltip . ' ' . $is_html ?> title="<?php echo $title ?>">
+                <?php echo $new_badge; ?>
                 <div class="xe-comment-entry">
                     <div class="xe-user-img">
                         <?php echo $hc_dot; ?>

@@ -29,6 +29,7 @@ require_once get_theme_file_path() .'/inc/fav-content.php';
 require_once get_theme_file_path() .'/inc/ajax.php';
 require_once get_theme_file_path() .'/inc/health-check.php';
 require_once get_theme_file_path() .'/inc/bookmarks.php';
+require_once get_theme_file_path() .'/inc/analytics.php';
 
 
 add_action('after_setup_theme', 'my_theme_setup');
@@ -824,6 +825,52 @@ function io_is_visible($val) {
  */
 function io_cat_hue($term_id) {
     return fmod($term_id * 137.508, 360);
+}
+
+/**
+ * Validate a color_picker value as a plain CSS color before it's ever
+ * echoed into a style attribute. The CS framework applies no sanitizer of
+ * its own to this field type, and the value is admin/editor-supplied (not
+ * a fixed constant), so an allow-list regex is used rather than trusting
+ * it -- only #hex (3-8 digits) or rgb()/rgba() with numeric components are
+ * accepted, matching what the framework's color picker actually produces.
+ * @param string $value
+ * @return string the value if it's a safe CSS color, otherwise ''
+ */
+function io_sanitize_css_color($value) {
+    $value = trim((string) $value);
+    if ($value === '') {
+        return '';
+    }
+    if (preg_match('/^#[0-9a-fA-F]{3,8}$/', $value)) {
+        return $value;
+    }
+    if (preg_match('/^rgba?\(\s*\d{1,3}\s*,\s*\d{1,3}\s*,\s*\d{1,3}\s*(,\s*(0|1|0?\.\d+))?\s*\)$/', $value)) {
+        return $value;
+    }
+    return '';
+}
+add_filter('cs_sanitize_color_picker', 'io_sanitize_css_color');
+
+/**
+ * Final CSS colors for a category's heading/sidebar link, for both color
+ * schemes. Prefers the admin's manual "_cat_color" override (term meta) if
+ * one is set and valid; otherwise falls back to the automatic per-term-ID
+ * hue used elsewhere in the theme, at the same lightness/saturation as the
+ * rest of the color-coding scheme.
+ * @param int $term_id
+ * @return array{light: string, dark: string} CSS color values
+ */
+function io_cat_colors($term_id) {
+    $override = io_sanitize_css_color(get_term_meta($term_id, '_cat_color', true));
+    if ($override !== '') {
+        return array('light' => $override, 'dark' => $override);
+    }
+    $hue = io_cat_hue($term_id);
+    return array(
+        'light' => "hsl($hue, 72%, 40%)",
+        'dark'  => "hsl($hue, 65%, 68%)",
+    );
 }
 
 

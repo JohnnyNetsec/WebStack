@@ -12,9 +12,9 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 function fav_con($mid, $visible) {
-        $cat_hue = io_cat_hue($mid->term_id);
+        $cat_colors = io_cat_colors($mid->term_id);
         ?>
-        <h4 class="text-gray io-cat-heading" data-target="#io-cat-body-<?php echo $mid->term_id; ?>" style="display: inline-block; --cat-hue: <?php echo $cat_hue; ?>;"><i class="fa fa-angle-down io-cat-chevron"></i><i class="icon-io-tag" style="margin-right: 27px;" id="term-<?php echo $mid->term_id; ?>"></i><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></h4>
+        <h4 class="text-gray io-cat-heading" data-target="#io-cat-body-<?php echo $mid->term_id; ?>" style="display: inline-block; --cat-color-light: <?php echo esc_attr($cat_colors['light']); ?>; --cat-color-dark: <?php echo esc_attr($cat_colors['dark']); ?>;"><i class="fa fa-angle-down io-cat-chevron"></i><i class="icon-io-tag" style="margin-right: 27px;" id="term-<?php echo $mid->term_id; ?>"></i><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></h4>
         <?php
         if($visible == 2){
             echo '<div class="login-notice">'.__('Please log in to view this category','i_theme').'</div>';

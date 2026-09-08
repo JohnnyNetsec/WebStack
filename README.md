@@ -35,6 +35,9 @@ Automatically or on demand, checks every site's URL and flags broken, unreachabl
 **Import/Export Bookmarks** (Sites -> Import/Export)
 Import a browser's bookmarks HTML export straight into the directory (with a preview before anything is written), or export the whole directory back out as a bookmarks file. See [Import/Export Bookmarks](#importexport-bookmarks) below.
 
+**Analytics** (Sites -> Analytics)
+A chart of outbound clicks per Site Category over the last 30 days, built from the same per-site click count the "Clicks" column already tracks. See [Analytics](#analytics) below.
+
 **Visitor-submitted sites**
 A "Submit a Site" page template lets visitors propose a new entry (title, URL, description, icon or WeChat QR upload, category) without admin access. Submissions land as Pending, so nothing appears publicly until you review and publish it; a cookie-based cooldown limits repeat submissions from the same visitor.
 
@@ -44,6 +47,8 @@ Front-end search matches against post titles as well as each site's description 
 **Appearance**
 + A light / dark / system color-scheme toggle, remembered per visitor, with no flash of the wrong theme on page load.
 + A site-count badge next to every category, in both the sidebar and the homepage.
++ Each homepage category heading and its matching sidebar link are colored to match each other, automatically and distinctly per category -- handy for telling sections apart at a glance once you have more than a handful of categories. The color is derived from the category itself, so it stays put as other categories are added, removed, or reordered, and scales to any number of them. Set a **Custom color** on a category's edit screen (Site Categories) to override the automatic color with your own, e.g. to match a brand color or to tell two categories apart that happened to land on similar automatic hues.
++ Sites added in the last 30 days show a small "New" badge on their card.
 + Each homepage category section can be collapsed/expanded by clicking its heading -- handy once you have a lot of categories -- and remembers which ones you've collapsed the next time you visit.
 + When the site-card tooltip is set to "Summary," hovering a card shows the site's full title (in case it's too long to fit on the card itself) above its description.
 + Configurable cards-per-row, homepage bulletin ticker, "Friendly Links" (WordPress's built-in Links/Blogroll manager), and three independent ad slots (homepage, detail-page sidebar, footer).
@@ -167,6 +172,22 @@ collection or take one back out.
 + **Export** downloads every Sites entry as a bookmarks HTML file, grouped by its
   current Site Category (matching the same two-level structure), ready to import
   into a browser or back into this same importer.
+
+### Analytics
+Under **Sites -> Analytics** in the admin, a stacked bar chart shows outbound clicks
+per Site Category for the last 30 days, with a totals table below it and each
+category colored the same as its heading/sidebar link elsewhere in the theme.
+
++ Clicks are only recorded when the **Internal redirect** setting (Theme Settings)
+  is turned on -- that's the same requirement the existing "Clicks" column already
+  has, since both come from the same `/go/` redirect. The page shows a reminder if
+  it's off.
++ The chart only covers clicks recorded after this feature shipped -- there is no
+  history from before it existed, so a brand new install (or one that just turned
+  the redirect on) starts with an empty chart and fills in from there.
++ Each site keeps a rolling 90-day log of its own daily click counts (separate from
+  its all-time total, which is unaffected and keeps counting indefinitely) so the
+  data behind the chart doesn't grow without bound.
 
 ### Admin screenshots
 <br/>

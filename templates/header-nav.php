@@ -61,7 +61,8 @@ $categories = get_categories( array(
                             
                             ?>
                         <li>
-                            <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php echo $category->term_id;?>" class="smooth cat-link" style="--cat-hue: <?php echo io_cat_hue($category->term_id); ?>;">
+                            <?php $cat_colors = io_cat_colors($category->term_id); ?>
+                            <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php echo $category->term_id;?>" class="smooth cat-link" style="--cat-color-light: <?php echo esc_attr($cat_colors['light']); ?>; --cat-color-dark: <?php echo esc_attr($cat_colors['dark']); ?>;">
                                 <i class="<?php echo get_term_meta($category->term_id, '_term_ico',true) ?> fa-fw"></i>
                                 <span class="title"><?php echo $category->name; ?></span>
                                 <span class="io-cat-count"><?php echo (int) $category->count; ?></span>
@@ -90,8 +91,9 @@ $categories = get_categories( array(
                                     }
                                 ?>
 
+                                <?php $mid_colors = io_cat_colors($mid->term_id); ?>
                                 <li>
-                                    <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php  echo $mid->term_id ;?>" class="smooth cat-link" style="--cat-hue: <?php echo io_cat_hue($mid->term_id); ?>;"><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></a>
+                                    <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php  echo $mid->term_id ;?>" class="smooth cat-link" style="--cat-color-light: <?php echo esc_attr($mid_colors['light']); ?>; --cat-color-dark: <?php echo esc_attr($mid_colors['dark']); ?>;"><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></a>
                                 </li>
                                 <?php } ?>
                             </ul>

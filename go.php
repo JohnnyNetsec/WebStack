@@ -48,6 +48,26 @@ $site_id = isset( $_GET['id'] ) ? absint( $_GET['id'] ) : 0;
 if ( $site_id && 'sites' === get_post_type( $site_id ) ) {
     $clicks = (int) get_post_meta( $site_id, '_sites_clicks', true );
     update_post_meta( $site_id, '_sites_clicks', $clicks + 1 );
+
+    /*
+     * Per-day click log, alongside the running total above, so the
+     * Analytics admin page can chart clicks over time. Trimmed to the last
+     * 90 days on every write so a long-lived popular entry's log meta
+     * cannot grow without bound.
+     */
+    $today = current_time( 'Y-m-d' );
+    $log = get_post_meta( $site_id, '_sites_clicks_log', true );
+    if ( ! is_array( $log ) ) {
+        $log = array();
+    }
+    $log[ $today ] = ( isset( $log[ $today ] ) ? $log[ $today ] : 0 ) + 1;
+    $cutoff = date( 'Y-m-d', strtotime( $today . ' -90 days' ) );
+    foreach ( $log as $day => $count ) {
+        if ( $day < $cutoff ) {
+            unset( $log[ $day ] );
+        }
+    }
+    update_post_meta( $site_id, '_sites_clicks_log', $log );
 }
 ?>
 <!DOCTYPE html>

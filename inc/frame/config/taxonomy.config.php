@@ -50,6 +50,13 @@ $options[] = array(
             'default'   => '0',
         ),
         array(
+            'id' => '_cat_color',
+            'type' => 'color_picker',
+            'title' => 'Custom color',
+            'after' => "Overrides the automatic color used for this category's heading and sidebar link. Leave empty to use the automatic color.",
+            'default' => '',
+        ),
+        array(
             'type'    => 'notice',
             'content' => '<b><span style="color:red">Note:</span> if a new category does not show up on the homepage, check that its Order field has a value. If it is empty, set one - the default is 0.</b>',
             'class'   => 'info',
