@@ -61,7 +61,7 @@ $categories = get_categories( array(
                             
                             ?>
                         <li>
-                            <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php echo $category->term_id;?>" class="smooth">
+                            <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php echo $category->term_id;?>" class="smooth cat-link" style="--cat-hue: <?php echo io_cat_hue($category->term_id); ?>;">
                                 <i class="<?php echo get_term_meta($category->term_id, '_term_ico',true) ?> fa-fw"></i>
                                 <span class="title"><?php echo $category->name; ?></span>
                                 <span class="io-cat-count"><?php echo (int) $category->count; ?></span>
@@ -91,7 +91,7 @@ $categories = get_categories( array(
                                 ?>
 
                                 <li>
-                                    <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php  echo $mid->term_id ;?>" class="smooth"><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></a>
+                                    <a href="<?php if (is_home() || is_front_page()): ?><?php else: echo home_url() ?>/<?php endif; ?>#term-<?php  echo $mid->term_id ;?>" class="smooth cat-link" style="--cat-hue: <?php echo io_cat_hue($mid->term_id); ?>;"><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></a>
                                 </li>
                                 <?php } ?>
                             </ul>

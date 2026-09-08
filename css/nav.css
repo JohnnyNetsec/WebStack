@@ -434,3 +434,22 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
  */
 .io-cat-heading{color:hsl(var(--cat-hue,210), 72%, 40%)}
 .black .io-cat-heading{color:hsl(var(--cat-hue,210), 65%, 68%)}
+
+/*
+ * Sidebar menu: same --cat-hue and the same HSL values as .io-cat-heading
+ * above, so a category's sidebar link is the identical color to its
+ * section heading in the main content, not just a similarly-toned one.
+ * Only leaf categories carry --cat-hue (see templates/header-nav.php) --
+ * a parent row that merely groups children (and so has no matching
+ * section of its own) is left in the default color. The extra ".cat-link"
+ * class keeps this from touching the unrelated wp_nav_menu item in
+ * ".submit-tag". Specificity is deliberately kept equal to the existing
+ * hover rule (both .sidebar-menu .main-menu a + one class) but lower than
+ * the active-item rule (li.active>a, one element more specific), and an
+ * explicit :hover override below restores the normal hover color -- so
+ * hovering/selecting a link still behaves exactly as it did before.
+ */
+.sidebar-menu .main-menu a.cat-link{color:hsl(var(--cat-hue,210), 72%, 40%)}
+.sidebar-menu .main-menu a.cat-link:hover{color:#111827}
+.black .sidebar-menu .main-menu a.cat-link{color:hsl(var(--cat-hue,210), 65%, 68%)}
+.black .sidebar-menu .main-menu a.cat-link:hover{color:#fff}

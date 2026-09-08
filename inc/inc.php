@@ -813,9 +813,22 @@ function io_is_visible($val) {
     }
 }
 
+/**
+ * Hue for a category's color-coding (section headings, sidebar menu), keyed
+ * off the term ID rather than its position so a category's color stays put
+ * as others are added/removed/reordered around it, and both places agree on
+ * the same color for the same category. Golden-angle spacing keeps even
+ * sequential IDs far apart on the wheel.
+ * @param int $term_id
+ * @return float degrees, 0-360
+ */
+function io_cat_hue($term_id) {
+    return fmod($term_id * 137.508, 360);
+}
+
 
 /**
- * Get the excerpt 
+ * Get the excerpt
  * @param int $count
  * @param string $meta_key
  * @param string $trimmarker

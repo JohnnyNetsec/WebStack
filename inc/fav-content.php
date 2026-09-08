@@ -12,13 +12,7 @@
  */
 if ( ! defined( 'ABSPATH' ) ) { exit; }
 function fav_con($mid, $visible) {
-        // Hue keyed off the term ID (not position in the loop) so each category
-        // keeps its own color permanently -- inserting/reordering categories
-        // elsewhere won't reshuffle colors already in use. Multiplying by the
-        // golden angle (137.508deg) spreads even sequential IDs far apart
-        // around the wheel, so it scales to any number of categories/
-        // sub-categories without needing a fixed-size palette.
-        $cat_hue = fmod($mid->term_id * 137.508, 360);
+        $cat_hue = io_cat_hue($mid->term_id);
         ?>
         <h4 class="text-gray io-cat-heading" data-target="#io-cat-body-<?php echo $mid->term_id; ?>" style="display: inline-block; --cat-hue: <?php echo $cat_hue; ?>;"><i class="fa fa-angle-down io-cat-chevron"></i><i class="icon-io-tag" style="margin-right: 27px;" id="term-<?php echo $mid->term_id; ?>"></i><?php echo $mid->name; ?><span class="io-cat-count"><?php echo (int) $mid->count; ?></span></h4>
         <?php
