@@ -432,5 +432,5 @@ input[type="button"],input[type="submit"]{background-color:#222;border:0;-webkit
  * near-black background. The fallback hue (210, blue) only applies if the
  * custom property is ever missing.
  */
-.io-cat-heading{color:hsl(var(--cat-hue,210) 72% 40%)}
-.black .io-cat-heading{color:hsl(var(--cat-hue,210) 65% 68%)}
+.io-cat-heading{color:hsl(var(--cat-hue,210), 72%, 40%)}
+.black .io-cat-heading{color:hsl(var(--cat-hue,210), 65%, 68%)}
